@@ -29,6 +29,7 @@ glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
 // behaviour
+game::SceneNode* player;
 bool player_jump = false;
 float player_jump_accerlation = 5.0;
 
@@ -122,6 +123,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "TextureMaterial", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/normal_map");
     resman_.LoadResource(Material, "Normal", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/self");
+    resman_.LoadResource(Material, "Self", filename.c_str());
 
     // Load material for screen-space effect
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
@@ -164,7 +167,7 @@ void Game::SetupResources(void){
     //resman_.CreateFireParticles("FireParticles");
     resman_.CreateWall("wall");
     resman_.CreateSphereParticles("FireParticles");
-    resman_.CreateCylinder("self", 5, 3, 10, 45);
+    resman_.CreateCylinder("self", 3, 1, 10, 45);
 }
 
 
@@ -177,7 +180,7 @@ void Game::SetupScene(void) {
     game::SceneNode* torus = CreateInstance("TorusInstance1", "TorusMesh", "ShinyBlueMaterial");
     //game::SceneNode* particles = CreateInstance("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     game::SceneNode* floor = CreateInstance("floor", "wall", "TextureMaterial", "Wood");
-    game::SceneNode* player = CreateInstance("Player", "self", "TextureMaterial");
+    player = CreateInstance("Player", "self", "Self");
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
     floor->Rotate(rotation);
@@ -187,7 +190,7 @@ void Game::SetupScene(void) {
 
     CreateSkyBox();
     Createbonfire(0, -1, 4);
-    //CreateTreeField(5);
+    CreateTreeField(5);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -198,28 +201,27 @@ void Game::MainLoop(void){
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
-        
         // Animate the scene
         if (animating_){
             static double last_time = 0;
             double current_time = glfwGetTime();
             if ((current_time - last_time) > 0.01){
-                if (camera_.GetPosition().y > 0) {
+                if (player->GetPosition().y > 0) {
                     if (player_jump) {
-                        camera_.SetPosition(camera_.GetPosition() + glm::vec3(0, player_jump_accerlation, 0));
+                        player->SetPosition(player->GetPosition() + glm::vec3(0, player_jump_accerlation, 0));
                         player_jump_accerlation -= 0.2;
                         if (player_jump_accerlation <= 0) {
                             player_jump = false;
                         }
                     }else {
-                        camera_.SetPosition(camera_.GetPosition() + glm::vec3(0, -player_jump_accerlation, 0));
+                        player->SetPosition(player->GetPosition() + glm::vec3(0, -player_jump_accerlation, 0));
                         if (player_jump_accerlation < 5.0) {
                             player_jump_accerlation += 0.2;
                         }
                     }
                 }
                 else {
-                    camera_.SetPosition(glm::vec3(camera_.GetPosition().x, 0, camera_.GetPosition().z));
+                    player->SetPosition(glm::vec3(player->GetPosition().x, 0, player->GetPosition().z));
                 }
                 light_.SetPosition(glm::vec3(cos(current_time) * 2, 0, sin(current_time) * 2));
                 
@@ -251,7 +253,7 @@ void Game::MainLoop(void){
         box->SetPosition(camera_.GetPosition() + glm::vec3(0, -1, 0));
 
         // Draw the scene
-        
+        scene_.Update();
         scene_.Draw(&camera_,&light_);
 
         // Draw the scene to a texture
@@ -325,20 +327,25 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
 
     if (key == GLFW_KEY_W){
-        game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
+        player->Translate(glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor);
+        //game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
     }
     if (key == GLFW_KEY_S){
-        game->camera_.Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
+        player->Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
+        //game->camera_.Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
     }
     if (key == GLFW_KEY_A) {
-        game->camera_.Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
+        player->Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
+        //game->camera_.Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
     }
     if (key == GLFW_KEY_D){
-        game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
+        player->Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
+        //game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
     }
     if (key == GLFW_KEY_SPACE){
         if (!player_jump && player_jump_accerlation == 5.0) {
-            game->camera_.Translate(glm::vec3(0, player_jump_accerlation, 0));
+            player->Translate(glm::vec3(0, player_jump_accerlation, 0));
+            //game->camera_.Translate(glm::vec3(0, player_jump_accerlation, 0));
             player_jump = true;
         }
     }
@@ -547,7 +554,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     num += 1;
     float scale = main_tree->GetScale().x / 2;
     //x side branches
-    Tree* tree1 = CreateTreeInstance("tree1", "tree", "Normal");
+    Tree* tree1 = CreateTreeInstance("tree", "tree", "Normal");
     tree1->SetOrientation(main_tree->GetOrientation());
     tree1->SetScale(glm::vec3(scale, scale, scale));
     tree1->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, 4 * scale));
@@ -557,7 +564,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     tree1->SetFather(main_tree);
     Branches_grow(tree1, num, max_num);
     //-x side branches
-    Tree* tree2 = CreateTreeInstance("tree2", "tree", "Normal");
+    Tree* tree2 = CreateTreeInstance("tree", "tree", "Normal");
     tree2->SetOrientation(main_tree->GetOrientation());
     tree2->SetScale(glm::vec3(scale, scale, scale));
     tree2->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, -4 * scale));
@@ -567,7 +574,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     main_tree->SetSon(tree2);
     Branches_grow(tree2, num, max_num);
     //z side branches
-    Tree* tree3 = CreateTreeInstance("tree3", "tree", "Normal");
+    Tree* tree3 = CreateTreeInstance("tree", "tree", "Normal");
     tree3->SetOrientation(main_tree->GetOrientation());
     tree3->SetScale(glm::vec3(scale, scale, scale));
     tree3->SetPosition(glm::vec3(-4 * scale, 8 * scale + 4 * scale, 0));
@@ -577,7 +584,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     main_tree->SetSon(tree3);
     Branches_grow(tree3, num, max_num);
     //-z side branches
-    Tree* tree4 = CreateTreeInstance("tree4", "tree", "Normal");
+    Tree* tree4 = CreateTreeInstance("tree", "tree", "Normal");
     tree4->SetOrientation(main_tree->GetOrientation());
     tree4->SetScale(glm::vec3(scale, scale, scale));
     tree4->SetPosition(glm::vec3(4 * scale, 8 * scale + 4 * scale, 0));
@@ -595,7 +602,7 @@ void Game::CreateTreeField(int num_branches) {
 
     // Create root og tree
     Tree* root = CreateTreeInstance("root", "tree", "Normal");
-
+    root->SetPosition(glm::vec3(0, 0, -100));
     // create branches
     Branches_grow(root, 0, 4);
     //set the vator of wind

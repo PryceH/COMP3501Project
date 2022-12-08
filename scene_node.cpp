@@ -164,7 +164,7 @@ namespace game {
     }
 
 
-    void SceneNode::Draw(Camera* camera, Light*light) {
+    void SceneNode::Draw(Camera* camera, Light* light) {
 
         // Select particle blending or not
         if (blending_) {
@@ -232,19 +232,25 @@ namespace game {
         glVertexAttribPointer(tex_att, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(GLfloat), (void*)(9 * sizeof(GLfloat)));
         glEnableVertexAttribArray(tex_att);
 
-        // World transformation
-        glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
-        glm::mat4 rotation = glm::mat4_cast(orientation_);
-        glm::mat4 translation = glm::translate(glm::mat4(1.0), position_);
-        glm::mat4 transf = translation * rotation * scaling;
+        if (name_ == "tree") {
+            glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
+            GLint world_mat = glGetUniformLocation(program, "world_mat");
+            glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(GetTrans() * scaling));
+        }
+        else {
+            glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
+            glm::mat4 rotation = glm::mat4_cast(orientation_);
+            glm::mat4 translation = glm::translate(glm::mat4(1.0), position_);
+            glm::mat4 transf = translation * rotation * scaling;
 
-        GLint world_mat = glGetUniformLocation(program, "world_mat");
-        glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(transf));
+            GLint world_mat = glGetUniformLocation(program, "world_mat");
+            glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(transf));
 
-        // Normal matrix
-        glm::mat4 normal_matrix = glm::transpose(glm::inverse(transf));
-        GLint normal_mat = glGetUniformLocation(program, "normal_mat");
-        glUniformMatrix4fv(normal_mat, 1, GL_FALSE, glm::value_ptr(normal_matrix));
+            // Normal matrix
+            glm::mat4 normal_matrix = glm::transpose(glm::inverse(transf));
+            GLint normal_mat = glGetUniformLocation(program, "normal_mat");
+            glUniformMatrix4fv(normal_mat, 1, GL_FALSE, glm::value_ptr(normal_matrix));
+        }
 
         // Texture
         if (texture_) {
