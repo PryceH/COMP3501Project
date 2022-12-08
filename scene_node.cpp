@@ -170,6 +170,9 @@ namespace game {
     void SceneNode::SetTrans(glm::mat4 o) {
         finaltrans_ = o;
     }
+    void SceneNode::SetTexture(Resource* texture) {
+        texture_ = texture->GetResource();
+    }
     glm::mat4 SceneNode::GetTrans() {
         return finaltrans_;
     }
