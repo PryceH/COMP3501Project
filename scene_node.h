@@ -45,6 +45,8 @@ namespace game {
         void SetScale(glm::vec3 scale);
         void SetBlending(bool blending);
         void SetAngle(float angle);
+        void SetTexture(Resource* texture);
+
 
         // Perform transformations on node
         void Translate(glm::vec3 trans);

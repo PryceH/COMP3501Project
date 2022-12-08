@@ -147,6 +147,23 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "TopTexture", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/skybox/bottom.jpg");
     resman_.LoadResource(Texture, "BottomTexture", filename.c_str());
+
+
+
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/skybox2/front.tga");
+    resman_.LoadResource(Texture, "FrontTexture2", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/skybox2/left.tga");
+    resman_.LoadResource(Texture, "LeftTexture2", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/skybox2/right.tga");
+    resman_.LoadResource(Texture, "RightTexture2", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/skybox2/back.tga");
+    resman_.LoadResource(Texture, "BackTexture2", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/skybox2/up.tga");
+    resman_.LoadResource(Texture, "TopTexture2", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/skybox2/down.tga");
+    resman_.LoadResource(Texture, "BottomTexture2", filename.c_str());
+
+
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/flame/flame4x4orig.png");
     resman_.LoadResource(Texture, "Flame", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/download.jpg");
@@ -163,7 +180,7 @@ void Game::SetupResources(void){
     // Create a torus
     resman_.CreateTorus("TorusMesh");
     resman_.CreateCylinder("SimpleCylinder", 1.0, 0.1, 10, 10);
-    resman_.CreateCylinder("tree", 8.0, 2.0, 50, 50);
+    resman_.CreateCylinder("tree", 15.0, 1.0, 50, 50);
     //resman_.CreateFireParticles("FireParticles");
     resman_.CreateWall("wall");
     resman_.CreateSphereParticles("FireParticles");
@@ -359,7 +376,31 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_K){
         game->camera_.Translate(-game->camera_.GetUp()* trans_factor);
     }
+    if (key == GLFW_KEY_C) {
+        game->ChangetoCastle();
+
+    }
+    if (key == GLFW_KEY_V) {
+        game->ChangetoVillage();
+
+    }
     
+}
+void Game::ChangetoCastle() {
+    scene_.GetNode("front")->SetTexture(resman_.GetResource("FrontTexture2"));
+    scene_.GetNode("back")->SetTexture(resman_.GetResource("BackTexture2"));
+    scene_.GetNode("left")->SetTexture(resman_.GetResource("LeftTexture2"));
+    scene_.GetNode("right")->SetTexture(resman_.GetResource("RightTexture2"));
+    scene_.GetNode("top")->SetTexture(resman_.GetResource("TopTexture2"));
+    scene_.GetNode("bottom")->SetTexture(resman_.GetResource("BottomTexture2"));
+}
+void Game::ChangetoVillage() {
+    scene_.GetNode("front")->SetTexture(resman_.GetResource("FrontTexture"));
+    scene_.GetNode("back")->SetTexture(resman_.GetResource("BackTexture"));
+    scene_.GetNode("left")->SetTexture(resman_.GetResource("LeftTexture"));
+    scene_.GetNode("right")->SetTexture(resman_.GetResource("RightTexture"));
+    scene_.GetNode("top")->SetTexture(resman_.GetResource("TopTexture"));
+    scene_.GetNode("bottom")->SetTexture(resman_.GetResource("BottomTexture"));
 }
 
 
