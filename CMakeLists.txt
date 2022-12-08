@@ -6,11 +6,11 @@ project(${PROJ_NAME})
 
 # Specify project files: header files and source files
 set(HDRS
-    asteroid.h camera.h game.h model_loader.h resource.h resource_manager.h scene_graph.h scene_node.h sky.h tree.h light.h Wall.h
+    asteroid.h camera.h game.h model_loader.h resource.h resource_manager.h scene_graph.h scene_node.h sky.h tree.h light.h
 )
  
 set(SRCS
-    light.cpp tree.cpp sky.cpp asteroid.cpp camera.cpp game.cpp main.cpp resource.cpp resource_manager.cpp scene_graph.cpp scene_node.cpp Wall.cpp
+    light.cpp tree.cpp sky.cpp asteroid.cpp camera.cpp game.cpp main.cpp resource.cpp resource_manager.cpp scene_graph.cpp scene_node.cpp
     shader/material_fp.glsl shader/material_vp.glsl shader/metal_fp.glsl shader/metal_vp.glsl shader/plastic_fp.glsl shader/plastic_vp.glsl
     shader/textured_material_fp.glsl shader/textured_material_vp.glsl shader/three-term_shiny_blue_fp.glsl shader/three-term_shiny_blue_vp.glsl 
     shader/normal_map_vp.glsl shader/normal_map_fp.glsl shader/screen_space_vp.glsl shader/screen_space_fp.glsl shader/fire_fp.glsl shader/fire_vp.glsl shader/fire_gp.glsl

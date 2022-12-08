@@ -32,8 +32,10 @@ namespace game {
         glm::vec3 GetPosition(void) const;
         glm::quat GetOrientation(void) const;
         glm::vec3 GetScale(void) const;
+        float GetRadius(void) const;
         float GetAngle(void) const;
         bool GetBlending(void) const;
+        SceneNode* GetPlayer(void) const;
 
         void SetTrans(glm::mat4 o);
         //get final transformation
@@ -44,8 +46,10 @@ namespace game {
         void SetOrientation(glm::quat orientation);
         void SetScale(glm::vec3 scale);
         void SetBlending(bool blending);
+        void SetRadius(float radius);
         void SetAngle(float angle);
         void SetTexture(Resource* texture);
+        void SetPlayer(SceneNode* player);
 
 
         // Perform transformations on node
@@ -53,7 +57,7 @@ namespace game {
         void Rotate(glm::quat rot);
         void Scale(glm::vec3 scale);
 
-        void CollideDetect(SceneNode player);
+        void CollideDetect();
         // Draw the node according to scene parameters in 'camera'
         // variable
         virtual void Draw(Camera* camera, Light*light);
@@ -79,10 +83,12 @@ namespace game {
         glm::vec3 position_; // Position of node
         glm::quat orientation_; // Orientation of node
         glm::vec3 scale_; // Scale of node
+        float radius_;
         float angle_;
         bool blending_; // Draw with blending or not
         glm::mat4 finaltrans_;//final tranformation
 
+        SceneNode* player_;
         // Set matrices that transform the node in a shader program
         void SetupShader(GLuint program);
 

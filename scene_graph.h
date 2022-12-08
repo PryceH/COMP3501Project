@@ -35,6 +35,7 @@ namespace game {
             GLuint texture_;
             GLuint depth_buffer_;
 
+
         public:
             // Constructor and destructor
             SceneGraph(void);

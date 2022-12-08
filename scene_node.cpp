@@ -78,6 +78,11 @@ namespace game {
     }
 
 
+    float SceneNode::GetRadius(void) const {
+
+        return radius_;
+    }
+
     float SceneNode::GetAngle(void) const {
 
         return angle_;
@@ -105,6 +110,12 @@ namespace game {
     void SceneNode::SetScale(glm::vec3 scale) {
 
         scale_ = scale;
+    }
+
+
+    void SceneNode::SetRadius(float radius) {
+
+        radius_ = radius;
     }
 
 
@@ -137,6 +148,10 @@ namespace game {
         blending_ = blending;
     }
 
+    void SceneNode::SetPlayer(SceneNode* player) {
+
+        player_ = player;
+    }
 
     GLenum SceneNode::GetMode(void) const {
 
@@ -167,6 +182,12 @@ namespace game {
         return material_;
     }
 
+
+    SceneNode* SceneNode::GetPlayer(void) const {
+        
+        return player_;
+    }
+
     void SceneNode::SetTrans(glm::mat4 o) {
         finaltrans_ = o;
     }
@@ -177,8 +198,13 @@ namespace game {
         return finaltrans_;
     }
 
-    void SceneNode::CollideDetect(SceneNode player) {
-        //Do nothing
+    void SceneNode::CollideDetect() {
+        SceneNode* player = GetPlayer();
+        float a = player->GetPosition().z - GetPosition().z;
+        float b = player->GetPosition().x - GetPosition().x;
+        float dis = glm::distance(player->GetPosition(), GetPosition());
+        float dis_collision = abs(dis * sin(atan(a / b) - GetAngle())) - player->GetRadius();
+        std::cout << "collide detect: " << dis_collision << "\n";
     }
 
     void SceneNode::Draw(Camera* camera, Light* light) {

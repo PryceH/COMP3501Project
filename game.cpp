@@ -29,7 +29,7 @@ glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
 // behaviour
-game::SceneNode* player;
+SceneNode* player;
 bool player_jump = false;
 float player_jump_accerlation = 5.0;
 
@@ -198,19 +198,21 @@ void Game::SetupScene(void) {
     //game::SceneNode* particles = CreateInstance("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
     player = CreateInstance<SceneNode>("Player", "self", "Self");
-    game::Wall* wall = CreateInstance<Wall>("Wall1", "wall", "TextureMaterial", "Wood");
+    game::SceneNode* wall = CreateInstance<SceneNode>("Wall", "wall", "TextureMaterial", "Wood");
 
+    player->SetRadius(1.0);
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
     floor->Rotate(rotation);
     floor->SetPosition(glm::vec3(0, -2, 0));
     floor->Scale(glm::vec3(1000.5, 1000.5, 1000.5));
   
 
-    rotation = glm::angleAxis(glm::pi<float>() / 4, glm::vec3(0.0, 1.0, 0.0));
-    wall->SetAngle(glm::pi<float>() / 4);
+    rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(0.0, 1.0, 0.0));
+    wall->SetAngle(glm::pi<float>() / 2);
     wall->Rotate(rotation);
-    wall->SetPosition(glm::vec3(10, 0, 0));
+    wall->SetPosition(glm::vec3(100, 0, 0));
     wall->Scale(glm::vec3(10, 10, 10));
+    wall->SetPlayer(player);
 
     CreateSkyBox();
     Createbonfire(0, -1, 4);
@@ -657,30 +659,5 @@ void Game::CreateTreeField(int num_branches) {
     //set the vator of wind
     root->SetWind(glm::vec3(1, 0, 1));
 
-}
-
-// wall
-Wall* Game::CreateWallInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
-    Resource* geom = resman_.GetResource(object_name);
-    if (!geom) {
-        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
-    }
-
-    Resource* mat = resman_.GetResource(material_name);
-    if (!mat) {
-        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
-    }
-    Resource* tex = NULL;
-    if (texture_name != "") {
-        tex = resman_.GetResource(texture_name);
-        if (!tex) {
-            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
-        }
-    }
-
-    // Create asteroid instance
-    Wall* wal = new Wall(entity_name, geom, mat, tex);
-    scene_.AddNode(wal);
-    return wal;
 }
 } // namespace game
