@@ -78,6 +78,12 @@ namespace game {
     }
 
 
+    float SceneNode::GetAngle(void) const {
+
+        return angle_;
+    }
+
+
     bool SceneNode::GetBlending(void) const {
 
         return blending_;
@@ -101,6 +107,11 @@ namespace game {
         scale_ = scale;
     }
 
+
+    void SceneNode::SetAngle(float angle) {
+
+        angle_ = angle;
+    }
 
     void SceneNode::Translate(glm::vec3 trans) {
 
@@ -163,6 +174,9 @@ namespace game {
         return finaltrans_;
     }
 
+    void SceneNode::CollideDetect(SceneNode player) {
+        //Do nothing
+    }
 
     void SceneNode::Draw(Camera* camera, Light* light) {
 

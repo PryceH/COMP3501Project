@@ -32,6 +32,7 @@ namespace game {
         glm::vec3 GetPosition(void) const;
         glm::quat GetOrientation(void) const;
         glm::vec3 GetScale(void) const;
+        float GetAngle(void) const;
         bool GetBlending(void) const;
 
         void SetTrans(glm::mat4 o);
@@ -43,12 +44,14 @@ namespace game {
         void SetOrientation(glm::quat orientation);
         void SetScale(glm::vec3 scale);
         void SetBlending(bool blending);
+        void SetAngle(float angle);
 
         // Perform transformations on node
         void Translate(glm::vec3 trans);
         void Rotate(glm::quat rot);
         void Scale(glm::vec3 scale);
 
+        void CollideDetect(SceneNode player);
         // Draw the node according to scene parameters in 'camera'
         // variable
         virtual void Draw(Camera* camera, Light*light);
@@ -74,6 +77,7 @@ namespace game {
         glm::vec3 position_; // Position of node
         glm::quat orientation_; // Orientation of node
         glm::vec3 scale_; // Scale of node
+        float angle_;
         bool blending_; // Draw with blending or not
         glm::mat4 finaltrans_;//final tranformation
 
