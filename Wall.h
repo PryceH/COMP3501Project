@@ -25,7 +25,7 @@ namespace game {
         // Destructor
         ~Wall();
 
-        void CollideDetect(SceneNode player);
+        void CollideDetect(SceneNode* player);
         glm::vec3 GetMove(void) const;
         void SetMove(glm::vec3 move);
         // Update geometry configuration

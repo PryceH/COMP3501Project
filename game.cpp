@@ -177,11 +177,11 @@ void Game::SetupScene(void) {
     scene_.SetBackgroundColor(viewport_background_color_g);
 
     // Create an instance of the torus mesh
-    game::SceneNode* torus = CreateInstance("TorusInstance1", "TorusMesh", "ShinyBlueMaterial");
+    game::SceneNode* torus = CreateInstance<SceneNode>("TorusInstance1", "TorusMesh", "ShinyBlueMaterial");
     //game::SceneNode* particles = CreateInstance("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
-    game::SceneNode* floor = CreateInstance("floor", "wall", "TextureMaterial", "Wood");
-    player = CreateInstance("Player", "self", "Self");
-    game::Wall* wall = CreateWallInstance("Wall1", "wall", "TextureMaterial", "Wood");
+    game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
+    player = CreateInstance<SceneNode>("Player", "self", "Self");
+    game::Wall* wall = CreateInstance<Wall>("Wall1", "wall", "TextureMaterial", "Wood");
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
     floor->Rotate(rotation);
@@ -189,7 +189,8 @@ void Game::SetupScene(void) {
     floor->Scale(glm::vec3(1000.5, 1000.5, 1000.5));
   
 
-    rotation = glm::angleAxis(glm::pi<float>() / 4, glm::vec3(1.0, 0.0, 0.0));
+    rotation = glm::angleAxis(glm::pi<float>() / 4, glm::vec3(0.0, 1.0, 0.0));
+    wall->SetAngle(glm::pi<float>() / 4);
     wall->Rotate(rotation);
     wall->SetPosition(glm::vec3(10, 0, 0));
     wall->Scale(glm::vec3(10, 10, 10));
@@ -419,8 +420,8 @@ void Game::CreateAsteroidField(int num_asteroids){
     }
 }
 
-
-SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name){
+template <class Instance>
+Instance *Game::CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name){
 
     Resource *geom = resman_.GetResource(object_name);
     if (!geom){
@@ -440,7 +441,8 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
         }
     }
 
-    SceneNode *scn = scene_.CreateNode(entity_name, geom, mat, tex);
+    Instance *scn = new Instance(entity_name, geom, mat, tex);
+    scene_.AddNode(scn);
     return scn;
 }
 
@@ -505,32 +507,32 @@ void Game::CreateSkyBox() {
 
 }
 void Game::Createbonfire(float x, float y, float z) {
-    game::SceneNode* c1 = CreateInstance("c1", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c1 = CreateInstance<SceneNode>("c1", "SimpleCylinder", "Normal", "Wood");
     c1->SetPosition(glm::vec3(x+0.1,y,z));
     glm::quat rotation = glm::angleAxis(glm::pi<float>()/4, glm::vec3(0.0, 0.0, 1.0));
     c1->Rotate(rotation);
 
-    game::SceneNode* c2 = CreateInstance("c2", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c2 = CreateInstance<SceneNode>("c2", "SimpleCylinder", "Normal", "Wood");
     c2->SetPosition(glm::vec3(x-0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(0.0, 0.0, 1.0));
     c2->Rotate(rotation);
 
-    game::SceneNode* c3 = CreateInstance("c3", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c3 = CreateInstance<SceneNode>("c3", "SimpleCylinder", "Normal", "Wood");
     c3->SetPosition(glm::vec3(x - 0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 1.0));
     c3->Rotate(rotation);
 
-    game::SceneNode* c4 = CreateInstance("c4", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c4 = CreateInstance<SceneNode>("c4", "SimpleCylinder", "Normal", "Wood");
     c4->SetPosition(glm::vec3(x, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, -1.0));
     c4->Rotate(rotation);
 
-    game::SceneNode* c5 = CreateInstance("c5", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c5 = CreateInstance<SceneNode>("c5", "SimpleCylinder", "Normal", "Wood");
     c5->SetPosition(glm::vec3(x, y, z - 0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(-1.0, 0.0, 0.0));
     c5->Rotate(rotation);
 
-    game::SceneNode* c6 = CreateInstance("c6", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c6 = CreateInstance<SceneNode>("c6", "SimpleCylinder", "Normal", "Wood");
     c6->SetPosition(glm::vec3(x, y, z+0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 0.0));
     c6->Rotate(rotation);

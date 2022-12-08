@@ -4,6 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <cmath>
 #include <time.h>
 namespace game {
 
@@ -14,7 +15,12 @@ namespace game {
     Wall::~Wall() {
     }
 
-    void Wall::CollideDetect(SceneNode player) {
+    void Wall::CollideDetect(SceneNode* player) {
+        float a = player->GetPosition().z - GetPosition().z;
+        float b = player->GetPosition().x - GetPosition().x;
+        float dis = glm::distance(player->GetPosition(), GetPosition());
+        float dis_collision = dis * sin(atan(b / a) - GetAngle());
+
         //Do nothing
     }
 
