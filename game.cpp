@@ -385,6 +385,18 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                 if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
                     player->Translate(move);
                 }
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10) {
+                    player->Translate(move);
+                    block_locate = "BlockC";
+                }
+            }else if (block_locate == "BlockC") {
+                if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > -50 && pos.z + move.z <= 10) {
+                    player->Translate(move);
+                }
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z > 10) {
+                    player->Translate(move);
+                    block_locate = "BlockB";
+                }
             }
         }
         if (key == GLFW_KEY_S) {
@@ -398,6 +410,19 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             else if (block_locate == "BlockB") {
                 if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
                     player->Translate(move);
+                }
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10) {
+                    player->Translate(move);
+                    block_locate = "BlockC";
+                }
+            }
+            else if (block_locate == "BlockC") {
+                if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > -50 && pos.z + move.z <= 10) {
+                    player->Translate(move);
+                }
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z > 10) {
+                    player->Translate(move);
+                    block_locate = "BlockB";
                 }
             }
             //game->camera_.Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
@@ -414,6 +439,19 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                 if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
                     player->Translate(move);
                 }
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10) {
+                    player->Translate(move);
+                    block_locate = "BlockC";
+                }
+            }
+            else if (block_locate == "BlockC") {
+                if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > -50 && pos.z + move.z <= 10) {
+                    player->Translate(move);
+                }
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z > 10) {
+                    player->Translate(move);
+                    block_locate = "BlockB";
+                }
             }
             //game->camera_.Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
         }
@@ -428,6 +466,19 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             else if (block_locate == "BlockB") {
                 if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
                     player->Translate(move);
+                }
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10) {
+                    player->Translate(move);
+                    block_locate = "BlockC";
+                }
+            }
+            else if (block_locate == "BlockC") {
+                if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > -50 && pos.z + move.z <= 10) {
+                    player->Translate(move);
+                }
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z > 10) {
+                    player->Translate(move);
+                    block_locate = "BlockB";
                 }
             }
             //game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
@@ -626,32 +677,32 @@ void Game::CreateSkyBox() {
 
 }
 void Game::Createbonfire(float x, float y, float z) {
-    game::SceneNode* c1 = CreateInstance<SceneNode>("c1", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c1 = CreateInstance<SceneNode>("c1", "SimpleCylinder", "TextureMaterial", "Wood");
     c1->SetPosition(glm::vec3(x+0.1,y,z));
     glm::quat rotation = glm::angleAxis(glm::pi<float>()/4, glm::vec3(0.0, 0.0, 1.0));
     c1->Rotate(rotation);
 
-    game::SceneNode* c2 = CreateInstance<SceneNode>("c2", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c2 = CreateInstance<SceneNode>("c2", "SimpleCylinder", "TextureMaterial", "Wood");
     c2->SetPosition(glm::vec3(x-0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(0.0, 0.0, 1.0));
     c2->Rotate(rotation);
 
-    game::SceneNode* c3 = CreateInstance<SceneNode>("c3", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c3 = CreateInstance<SceneNode>("c3", "SimpleCylinder", "TextureMaterial", "Wood");
     c3->SetPosition(glm::vec3(x - 0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 1.0));
     c3->Rotate(rotation);
 
-    game::SceneNode* c4 = CreateInstance<SceneNode>("c4", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c4 = CreateInstance<SceneNode>("c4", "SimpleCylinder", "TextureMaterial", "Wood");
     c4->SetPosition(glm::vec3(x, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, -1.0));
     c4->Rotate(rotation);
 
-    game::SceneNode* c5 = CreateInstance<SceneNode>("c5", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c5 = CreateInstance<SceneNode>("c5", "SimpleCylinder", "TextureMaterial", "Wood");
     c5->SetPosition(glm::vec3(x, y, z - 0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(-1.0, 0.0, 0.0));
     c5->Rotate(rotation);
 
-    game::SceneNode* c6 = CreateInstance<SceneNode>("c6", "SimpleCylinder", "Normal", "Wood");
+    game::SceneNode* c6 = CreateInstance<SceneNode>("c6", "SimpleCylinder", "TextureMaterial", "Wood");
     c6->SetPosition(glm::vec3(x, y, z+0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 0.0));
     c6->Rotate(rotation);
@@ -681,7 +732,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     num += 1;
     float scale = main_tree->GetScale().x / 2;
     //x side branches
-    Tree* tree1 = CreateTreeInstance("tree", "tree", "Normal");
+    Tree* tree1 = CreateTreeInstance("tree", "tree", "TextureMaterial");
     tree1->SetOrientation(main_tree->GetOrientation());
     tree1->SetScale(glm::vec3(scale, scale, scale));
     tree1->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, 4 * scale));
@@ -691,7 +742,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     tree1->SetFather(main_tree);
     Branches_grow(tree1, num, max_num);
     //-x side branches
-    Tree* tree2 = CreateTreeInstance("tree", "tree", "Normal");
+    Tree* tree2 = CreateTreeInstance("tree", "tree", "TextureMaterial");
     tree2->SetOrientation(main_tree->GetOrientation());
     tree2->SetScale(glm::vec3(scale, scale, scale));
     tree2->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, -4 * scale));
@@ -701,7 +752,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     main_tree->SetSon(tree2);
     Branches_grow(tree2, num, max_num);
     //z side branches
-    Tree* tree3 = CreateTreeInstance("tree", "tree", "Normal");
+    Tree* tree3 = CreateTreeInstance("tree", "tree", "TextureMaterial");
     tree3->SetOrientation(main_tree->GetOrientation());
     tree3->SetScale(glm::vec3(scale, scale, scale));
     tree3->SetPosition(glm::vec3(-4 * scale, 8 * scale + 4 * scale, 0));
@@ -711,7 +762,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     main_tree->SetSon(tree3);
     Branches_grow(tree3, num, max_num);
     //-z side branches
-    Tree* tree4 = CreateTreeInstance("tree", "tree", "Normal");
+    Tree* tree4 = CreateTreeInstance("tree", "tree", "TextureMaterial");
     tree4->SetOrientation(main_tree->GetOrientation());
     tree4->SetScale(glm::vec3(scale, scale, scale));
     tree4->SetPosition(glm::vec3(4 * scale, 8 * scale + 4 * scale, 0));
@@ -728,7 +779,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
 void Game::CreateTreeField(int num_branches) {
 
     // Create root og tree
-    Tree* root = CreateTreeInstance("root", "tree", "Normal");
+    Tree* root = CreateTreeInstance("root", "tree", "TextureMaterial");
     root->SetPosition(glm::vec3(0, 0, -100));
     // create branches
     Branches_grow(root, 0, 4);
@@ -761,18 +812,21 @@ void Game::CreateBlockA() {
 
 void Game::CreateBlockB() {
     std::vector<SceneNode*> wall_arr;
-    int wall_coordinate[16][2] = { {110, 110}, {130, 110}, {150, 110}, 
-                                    {160, 100}, {160, 80}, {160, 60}, {160, 40}, {160, 20}, 
+    int wall_coordinate[25][2] = { {110, 110}, {130, 110}, {150, 110}, 
+                                    {160, 100}, {160, 80}, {160, 60}, {160, 40}, {160, 20}, {160, 0}, {160, -20}, {160, -40},
                                     {110, 10}, {130, 10}, {150, 10},
-                                    {100, 100}, {100, 80}, {100, 60}, {100, 40}, {100, 20},
+                                    {100, 100}, {100, 80}, {100, 60}, {100, 40}, {100, 20}, {100, 0}, {100, -20}, {100, -40},
+                                    {110, -50}, {130, -50}, {150, -50},
     };
-    float wall_angle[16] = { 0.0, 0.0, 0.0, 
-                        glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2,
+    float wall_angle[25] = { 0.0, 0.0, 0.0, 
+                        glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2,
                         glm::pi<float>(), glm::pi<float>(), glm::pi<float>(),
-                        glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2 };
-    for (int i = 0; i < 16; i++) {
+                        glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2,
+                        glm::pi<float>(), glm::pi<float>(), glm::pi<float>()
+    };
+    for (int i = 0; i < 25; i++) {
         std::stringstream ss;
-        ss << i;
+        ss << i + 12;
         std::string index = ss.str();
         std::string name = "Wall" + index;
         wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Stone"));
