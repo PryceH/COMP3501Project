@@ -26,7 +26,7 @@ void main(void){
     vec4 position = gl_in[0].gl_Position;
 
     // Define particle size
-    float p_size = particle_size*100; //
+    float p_size = particle_size*500; //
 
     // Define the positions of the four vertices that will form a quad 
     // The positions are based on the position of the particle and its size

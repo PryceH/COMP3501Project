@@ -245,10 +245,10 @@ void Game::SetupScene(void) {
     cover->Rotate(rotation);
     cover->SetPosition(camera_position_g + glm::vec3(0, 0, -4));
 
-    game::SceneNode* flame = CreateInstance<SceneNode>("fire", "FireParticles", "FireMaterial", "Flame");
-    flame->SetPosition(glm::vec3(0,1,-1));
+    //game::SceneNode* flame = CreateInstance<SceneNode>("fire", "FireParticles", "FireMaterial", "Flame");
+    //flame->SetPosition(glm::vec3(0,1,-1));
     game::SceneNode* magic = CreateInstance<SceneNode>("magic", "MagicParticles", "ParticleMagic", "Magic");
-    magic->SetPosition(glm::vec3(1, 0, 1));
+    magic->SetPosition(glm::vec3(22, -0.5, -22));
 }
 
 
