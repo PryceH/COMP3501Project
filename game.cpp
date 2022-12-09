@@ -840,13 +840,13 @@ void Game::CreateTreeField(int num_branches) {
 
     // Create root og tree
     Tree* root = CreateTreeInstance("root", "tree", "Light", "Wood");
-    root->SetPosition(glm::vec3(0, 0, 0));
+    root->SetPosition(glm::vec3(-25, 0, -25));
     Branches_grow(root, 0, 3);
     root = CreateTreeInstance("root", "tree", "Light", "Wood");
-    root->SetPosition(glm::vec3(6, 0, 6));
+    root->SetPosition(glm::vec3(25, 0, 25));
     Branches_grow(root, 0, 3);
     root = CreateTreeInstance("root", "tree", "Light", "Wood");
-    root->SetPosition(glm::vec3(6, 0, -6));
+    root->SetPosition(glm::vec3(-25, 0, 25));
     Branches_grow(root, 0, 3);
     // create branches
     
