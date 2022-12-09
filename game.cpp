@@ -231,10 +231,11 @@ void Game::SetupScene(void) {
     floor2->Scale(glm::vec3(80, 80, 80));
 
     CreateSkyBox();
-    Createbonfire(-22, -1.5, -22);
+    
     CreateTreeField(5);
     CreateBlockA();
     CreateBlockB();
+    Createbonfire(-22, -1.5, -22);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -719,7 +720,7 @@ void Game::Createbonfire(float x, float y, float z) {
     c6->Rotate(rotation);
     game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     particles->SetPosition(glm::vec3(x, y, z));
-    //particles->SetBlending(true);
+    particles->SetBlending(true);
 
     //game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     //particles->SetPosition(glm::vec3(x, y+1, z));
