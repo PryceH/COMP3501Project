@@ -500,6 +500,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             //game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
         }
         if (key == GLFW_KEY_SPACE) {
+            game->camera_.Translate(glm::vec3(0, 2.0, 0)* trans_factor);
         }
         
         if (key == GLFW_KEY_C && action == GLFW_PRESS) {
