@@ -262,6 +262,7 @@ void Game::SetupScene(void) {
     game::SceneNode* magicB = CreateInstance<SceneNode>("magicB", "MagicParticles", "ParticleMagic", "Magic");
     magicB->SetPosition(glm::vec3(130, -0.5, 100));
     magicB->SetPlayer(player);
+    light_.SetPosition(glm::vec3(0,10,0));
 }
 
 
@@ -280,7 +281,7 @@ void Game::MainLoop(void){
                 }
 
                 player->SetPosition(glm::vec3(player->GetPosition().x, -10, player->GetPosition().z));
-                light_.SetPosition(glm::vec3(cos(current_time) * 2, 0, sin(current_time) * 2));
+                
                 
                 //scene_.Update();
 
