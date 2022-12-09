@@ -82,7 +82,7 @@ namespace game {
             //sky box
             Sky* CreateSkyBoxInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));
             void CreateSkyBox();
-            void Createbonfire(float x, float y, float z);
+            void Createbonfire(std::string name, float x, float y, float z);
             void ChangetoCastle();
             void ChangetoVillage();
 
