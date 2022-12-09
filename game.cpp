@@ -208,6 +208,7 @@ void Game::SetupScene(void) {
     player->SetBlending(true);
     player->SetRadius(1.0);
     player->SetAngle(glm::pi<float>() / 2);
+    player->SetPosition(glm::vec3(0,0,25));
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
     floor->Rotate(rotation);
@@ -222,12 +223,14 @@ void Game::SetupScene(void) {
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
-
+    /*game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
+    particles->SetPosition(glm::vec3(0,1,-1));*/
+    //particles->SetBlending(true);
     //cover
     game::SceneNode* cover = CreateInstance<SceneNode>("cover", "wall", "TextureMaterial", "Cover");
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
     cover->Rotate(rotation);
-    cover->SetPosition(camera_position_g + glm::vec3(0, 0, -4));
+    cover->SetPosition(player->GetPosition() + glm::vec3(-0.2, 0, -4));
 }
 
 
@@ -373,7 +376,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         }
 
         if (key == GLFW_KEY_W) {
-            //game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
+            game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
             glm::vec3 pos = player->GetPosition();
             glm::vec3 move = glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor;
             if (block_locate == "BlockA") {
@@ -541,14 +544,10 @@ void Game::ResizeCallback(GLFWwindow* window, int width, int height){
     Game *game = (Game *) ptr;
     game->camera_.SetProjection(camera_fov_g, camera_near_clip_distance_g, camera_far_clip_distance_g, width, height);
 }
-
-
 Game::~Game(){
     
     glfwTerminate();
 }
-
-
 Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name){
 
     // Get resources
@@ -567,8 +566,6 @@ Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string obje
     scene_.AddNode(ast);
     return ast;
 }
-
-
 void Game::CreateAsteroidField(int num_asteroids){
 
     // Create a number of asteroid instances
@@ -589,7 +586,6 @@ void Game::CreateAsteroidField(int num_asteroids){
         ast->SetAngM(glm::normalize(glm::angleAxis(0.05f*glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
     }
 }
-
 template <class Instance>
 Instance *Game::CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name){
 
@@ -615,9 +611,6 @@ Instance *Game::CreateInstance(std::string entity_name, std::string object_name,
     scene_.AddNode(scn);
     return scn;
 }
-
-
-
 // sky box
 Sky* Game::CreateSkyBoxInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
     Resource* geom = resman_.GetResource(object_name);
@@ -706,10 +699,13 @@ void Game::Createbonfire(float x, float y, float z) {
     c6->SetPosition(glm::vec3(x, y, z+0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 0.0));
     c6->Rotate(rotation);
-
     game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
-    particles->SetPosition(glm::vec3(x, y+1, z));
+    particles->SetPosition(glm::vec3(x, y, z));
     //particles->SetBlending(true);
+
+    //game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
+    //particles->SetPosition(glm::vec3(x, y+1, z));
+    ////particles->SetBlending(true);
 }
 Tree* Game::CreateTreeInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
 
