@@ -180,6 +180,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Stone", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/rocky.png");
     resman_.LoadResource(Texture, "Rock", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/land.png");
+    resman_.LoadResource(Texture, "Land", filename.c_str());
 
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
     resman_.LoadResource(Texture, "Cover", filename.c_str());
@@ -220,7 +222,7 @@ void Game::SetupScene(void) {
     player->SetPosition(glm::vec3(0,0,25));
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
-    game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
+    game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Land");
     floor->Rotate(rotation);
     floor->SetPosition(glm::vec3(0, -2, 0));
     floor->Scale(glm::vec3(80.5, 80.5, 80.5));
