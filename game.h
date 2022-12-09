@@ -89,7 +89,7 @@ namespace game {
             // Create an instance of an object stored in the resource manager
             template <class Instance> 
             Instance *CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));
-            Tree* CreateTreeInstance(std::string entity_name, std::string object_name, std::string material_name);
+            Tree* CreateTreeInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));
             // Create tree
             void CreateTreeField(int num_branches);
 

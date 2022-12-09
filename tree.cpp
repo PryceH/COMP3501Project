@@ -7,7 +7,7 @@
 #include <time.h>
 namespace game {
 
-    Tree::Tree(const std::string name, const Resource* geometry, const Resource* material) : SceneNode(name, geometry, material) {
+    Tree::Tree(const std::string name, const Resource* geometry, const Resource* material, const Resource* texture) : SceneNode(name, geometry, material, texture) {
     }
 
 
@@ -80,7 +80,7 @@ namespace game {
         }
         else {//braches of tree
 
-            Rotate(glm::angleAxis((glm::pi<float>() / 360) * move, wind_));//rotate the tree by vator wind
+            //Rotate(glm::angleAxis((glm::pi<float>() / 360) * move, wind_));//rotate the tree by vator wind
             glm::mat4 T = glm::translate(glm::mat4(1.0), tran_);
             glm::mat4 T2 = glm::translate(glm::mat4(1.0), GetPosition());
             glm::mat4 R = glm::mat4_cast(GetOrientation());

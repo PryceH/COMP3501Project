@@ -178,6 +178,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Wood", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/stone.jpg");
     resman_.LoadResource(Texture, "Stone", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/rocky.png");
+    resman_.LoadResource(Texture, "Rock", filename.c_str());
 
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
     resman_.LoadResource(Texture, "Cover", filename.c_str());
@@ -209,35 +211,41 @@ void Game::SetupScene(void) {
 
     // Create an instance of the torus mesh
     //game::SceneNode* torus = CreateInstance<SceneNode>("TorusInstance1", "TorusMesh", "ShinyBlueMaterial");
-    //game::SceneNode* particles = CreateInstance("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
-    game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
+    
+    
     player = CreateInstance<SceneNode>("Player", "self", "Self");
     player->SetBlending(true);
     player->SetRadius(1.0);
     player->SetAngle(glm::pi<float>() / 2);
+    player->SetPosition(glm::vec3(0,0,25));
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
+    game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
     floor->Rotate(rotation);
     floor->SetPosition(glm::vec3(0, -2, 0));
-    floor->Scale(glm::vec3(1000.5, 1000.5, 1000.5));
+    floor->Scale(glm::vec3(80.5, 80.5, 80.5));
+
+    game::SceneNode* floor2 = CreateInstance<SceneNode>("floor2", "wall", "TextureMaterial", "Rock");
+    floor2->Rotate(rotation);
+    floor2->SetPosition(glm::vec3(170, -2, 50));
+    floor2->Scale(glm::vec3(80, 80, 80));
 
     CreateSkyBox();
-    Createbonfire(0, -1, 4);
+    Createbonfire(-22, -1.5, -22);
     CreateTreeField(5);
     CreateBlockA();
     CreateBlockB();
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
-
+    /*game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
+    particles->SetPosition(glm::vec3(0,1,-1));*/
+    //particles->SetBlending(true);
     //cover
     game::SceneNode* cover = CreateInstance<SceneNode>("cover", "wall", "TextureMaterial", "Cover");
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
     cover->Rotate(rotation);
     cover->SetPosition(camera_position_g + glm::vec3(0, 0, -4));
-
-    game::SceneNode* magic = CreateInstance<SceneNode>("Magic", "MagicParticles", "ParticleMagic", "Magic");
-    magic->Translate(glm::vec3(1.0, 0.0, 5.0));
 }
 
 
@@ -383,7 +391,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         }
 
         if (key == GLFW_KEY_W) {
-            //game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
+            game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
             glm::vec3 pos = player->GetPosition();
             glm::vec3 move = glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor;
             if (block_locate == "BlockA") {
@@ -551,14 +559,10 @@ void Game::ResizeCallback(GLFWwindow* window, int width, int height){
     Game *game = (Game *) ptr;
     game->camera_.SetProjection(camera_fov_g, camera_near_clip_distance_g, camera_far_clip_distance_g, width, height);
 }
-
-
 Game::~Game(){
     
     glfwTerminate();
 }
-
-
 Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name){
 
     // Get resources
@@ -577,8 +581,6 @@ Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string obje
     scene_.AddNode(ast);
     return ast;
 }
-
-
 void Game::CreateAsteroidField(int num_asteroids){
 
     // Create a number of asteroid instances
@@ -599,7 +601,6 @@ void Game::CreateAsteroidField(int num_asteroids){
         ast->SetAngM(glm::normalize(glm::angleAxis(0.05f*glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
     }
 }
-
 template <class Instance>
 Instance *Game::CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name){
 
@@ -625,9 +626,6 @@ Instance *Game::CreateInstance(std::string entity_name, std::string object_name,
     scene_.AddNode(scn);
     return scn;
 }
-
-
-
 // sky box
 Sky* Game::CreateSkyBoxInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
     Resource* geom = resman_.GetResource(object_name);
@@ -716,8 +714,15 @@ void Game::Createbonfire(float x, float y, float z) {
     c6->SetPosition(glm::vec3(x, y, z+0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 0.0));
     c6->Rotate(rotation);
+    game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
+    particles->SetPosition(glm::vec3(x, y, z));
+    //particles->SetBlending(true);
+
+    //game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
+    //particles->SetPosition(glm::vec3(x, y+1, z));
+    ////particles->SetBlending(true);
 }
-Tree* Game::CreateTreeInstance(std::string entity_name, std::string object_name, std::string material_name) {
+Tree* Game::CreateTreeInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
 
     // Get resources
     Resource* geom = resman_.GetResource(object_name);
@@ -729,9 +734,16 @@ Tree* Game::CreateTreeInstance(std::string entity_name, std::string object_name,
     if (!mat) {
         throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
     }
+    Resource* tex = NULL;
+    if (texture_name != "") {
+        tex = resman_.GetResource(texture_name);
+        if (!tex) {
+            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+        }
+    }
 
     // Create asteroid instance
-    Tree* tree = new Tree(entity_name, geom, mat);
+    Tree* tree = new Tree(entity_name, geom, mat,tex);
     scene_.AddNode(tree);
     return tree;
 }
@@ -789,7 +801,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
 void Game::CreateTreeField(int num_branches) {
 
     // Create root og tree
-    Tree* root = CreateTreeInstance("root", "tree", "TextureMaterial");
+    Tree* root = CreateTreeInstance("root", "tree", "TextureMaterial", "Wood");
     root->SetPosition(glm::vec3(0, 0, 0));
     // create branches
     Branches_grow(root, 0, 4);
