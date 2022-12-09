@@ -12,6 +12,7 @@
 // Default extensions for different shader source files
 #define VERTEX_PROGRAM_EXTENSION "_vp.glsl"
 #define FRAGMENT_PROGRAM_EXTENSION "_fp.glsl"
+#define GEOMETRY_PROGRAM_EXTENSION "_gp.glsl"
 
 namespace game {
 
@@ -37,6 +38,7 @@ namespace game {
             void CreateSphere(std::string object_name, float radius = 0.6, int num_samples_theta = 90, int num_samples_phi = 45);
             void CreateWall(std::string object_name);
             void CreateSphereParticles(std::string object_name, int num_particles = 2000);
+            void CreateMagicParticles(std::string object_name, int layer=5);
             void CreateCylinder(std::string object_name, float height = 5, float circle_radius = 0.2, int num_height_samples = 90, int num_circle_samples = 30);
 
         private:

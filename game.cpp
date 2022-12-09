@@ -133,6 +133,10 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "ScreenSpaceMaterial", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_effect");
     resman_.LoadResource(Material, "ScreenEffectMaterial", filename.c_str());
+
+    // Load material to be applied to particles
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/magic");
+    resman_.LoadResource(Material, "ParticleMagic", filename.c_str());
     //filename = std::string(MATERIAL_DIRECTORY) + std::string("/fire");
     //resman_.LoadResource(Material, "FireMaterial", filename.c_str());
 
@@ -168,6 +172,8 @@ void Game::SetupResources(void){
 
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/flame/flame4x4orig.png");
     resman_.LoadResource(Texture, "Flame", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/flame/magic.png");
+    resman_.LoadResource(Texture, "Magic", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/download.jpg");
     resman_.LoadResource(Texture, "Wood", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/stone.jpg");
@@ -191,6 +197,7 @@ void Game::SetupResources(void){
     //resman_.CreateFireParticles("FireParticles");
     resman_.CreateWall("wall");
     resman_.CreateSphereParticles("FireParticles");
+    resman_.CreateMagicParticles("MagicParticles");
     resman_.CreateCylinder("self", 3, 1, 10, 45);
 }
 
@@ -228,6 +235,9 @@ void Game::SetupScene(void) {
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
     cover->Rotate(rotation);
     cover->SetPosition(camera_position_g + glm::vec3(0, 0, -4));
+
+    game::SceneNode* magic = CreateInstance<SceneNode>("Magic", "MagicParticles", "ParticleMagic", "Magic");
+    magic->Translate(glm::vec3(1.0, 0.0, 5.0));
 }
 
 
