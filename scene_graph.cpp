@@ -164,7 +164,7 @@ void SceneGraph::SetupDrawToTexture(void){
 }
 
 
-void SceneGraph::DrawToTexture(Camera *camera, Light *light){
+void SceneGraph::DrawToTexture(Camera* camera, Light* light) {
 
     // Save current viewport
     GLint viewport[4];
@@ -172,17 +172,26 @@ void SceneGraph::DrawToTexture(Camera *camera, Light *light){
 
     // Enable frame buffer
     glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer_);
-    glViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT); 
+    glViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 
     // Clear background
-    glClearColor(background_color_[0], 
-                 background_color_[1],
-                 background_color_[2], 0.0);
+    glClearColor(background_color_[0],
+        background_color_[1],
+        background_color_[2], 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    glDisable(GL_DEPTH_TEST);
+    GetNode("front")->Draw(camera, light);
+    GetNode("back")->Draw(camera, light);
+    GetNode("right")->Draw(camera, light);
+    GetNode("left")->Draw(camera, light);
+    GetNode("top")->Draw(camera, light);
+    GetNode("bottom")->Draw(camera, light);
+    glEnable(GL_DEPTH_TEST);
     // Draw all scene nodes
-    for (int i = 0; i < node_.size(); i++){
-        node_[i]->Draw(camera, light);
+    for (int i = 0; i < node_.size(); i++) {
+        if (node_[i]->GetName() != "front" && node_[i]->GetName() != "back" && node_[i]->GetName() != "top" && node_[i]->GetName() != "bottom" && node_[i]->GetName() != "left" && node_[i]->GetName() != "right") {
+            node_[i]->Draw(camera, light);
+        }
     }
 
     // Reset frame buffer
