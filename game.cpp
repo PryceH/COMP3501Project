@@ -780,7 +780,7 @@ void Game::CreateTreeField(int num_branches) {
 
     // Create root og tree
     Tree* root = CreateTreeInstance("root", "tree", "TextureMaterial");
-    root->SetPosition(glm::vec3(0, 0, -100));
+    root->SetPosition(glm::vec3(0, 0, 0));
     // create branches
     Branches_grow(root, 0, 4);
     //set the vator of wind
