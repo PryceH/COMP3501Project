@@ -33,6 +33,7 @@ SceneNode* player;
 bool player_jump = false;
 bool game_start = false;
 float player_jump_accerlation = 5.0;
+std::string block_locate = "BlockA";
 
 Game::Game(void){
 
@@ -169,6 +170,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Flame", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/download.jpg");
     resman_.LoadResource(Texture, "Wood", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/stone.jpg");
+    resman_.LoadResource(Texture, "Stone", filename.c_str());
 
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
     resman_.LoadResource(Texture, "Cover", filename.c_str());
@@ -202,26 +205,20 @@ void Game::SetupScene(void) {
     //game::SceneNode* particles = CreateInstance("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
     player = CreateInstance<SceneNode>("Player", "self", "Self");
-    game::SceneNode* wall = CreateInstance<SceneNode>("Wall", "wall", "TextureMaterial", "Wood");
-
+    player->SetBlending(true);
     player->SetRadius(1.0);
-    player->SetAngle(90.0);
+    player->SetAngle(glm::pi<float>() / 2);
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
     floor->Rotate(rotation);
     floor->SetPosition(glm::vec3(0, -2, 0));
     floor->Scale(glm::vec3(1000.5, 1000.5, 1000.5));
 
-    rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(0.0, 1.0, 0.0));
-    wall->SetAngle(glm::pi<float>() / 2);
-    wall->Rotate(rotation);
-    wall->SetPosition(glm::vec3(0, 0, 100));
-    wall->Scale(glm::vec3(10, 10, 10));
-    wall->SetPlayer(player);
-
     CreateSkyBox();
     Createbonfire(0, -1, 4);
     CreateTreeField(5);
+    CreateBlockA();
+    CreateBlockB();
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -238,6 +235,7 @@ void Game::MainLoop(void){
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
+        camera_.SetPosition(player->GetPosition());
         // Animate the scene
         if (animating_){
             static double last_time = 0;
@@ -268,12 +266,12 @@ void Game::MainLoop(void){
                 //scene_.Update();
 
                 // Animate the torus
-                SceneNode *node = scene_.GetNode("TorusInstance1");
-                glm::quat rotation = glm::angleAxis(glm::pi<float>()/180.0f, glm::vec3(0.0, 1.0, 0.0));
-                node->Rotate(rotation);
+                //SceneNode *node = scene_.GetNode("TorusInstance1");
+                //glm::quat rotation = glm::angleAxis(glm::pi<float>() / 180, glm::vec3(0.0, 1.0, 0.0));
+                //node->Rotate(rotation);
 
-                node = scene_.GetNode("ParticleInstance1");
-                rotation = glm::angleAxis(0.2f * glm::pi<float>() / 180.0f, glm::vec3(0.0, 1.0, 0.0));
+                //node = scene_.GetNode("ParticleInstance1");
+                //rotation = glm::angleAxis(glm::pi<float>() / (180*5), glm::vec3(0.0, 1.0, 0.0));
 
                 last_time = current_time;
             }
@@ -362,31 +360,76 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         if (key == GLFW_KEY_LEFT) {
             game->camera_.Yaw(rot_factor);
             player->SetAngle(player->GetAngle()+rot_factor);
+            if (player->GetAngle() >= 2 * glm::pi<float>()) {
+                player->SetAngle(player->GetAngle() - 2 * glm::pi<float>());
+            }
         }
         if (key == GLFW_KEY_RIGHT) {
             game->camera_.Yaw(-rot_factor);
             player->SetAngle(player->GetAngle()-rot_factor);
+            if (player->GetAngle() < 0) {
+                player->SetAngle(player->GetAngle() + 2 * glm::pi<float>());
+            }
         }
 
         if (key == GLFW_KEY_W) {
             //game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
-            if (player->GetCollide()) {
-
-            }
-            else {
-                player->Translate(glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor);
+            glm::vec3 pos = player->GetPosition();
+            glm::vec3 move = glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor;
+            if (block_locate == "BlockA") {
+                if (pos.x > -30 && pos.x + move.x < 30 && pos.z + move.z > -30 && pos.z + move.z < 30) {
+                    std::cout << "(" << pos.x + move.x << ", " << pos.z + move.z << ")\n";
+                    player->Translate(move);
+                }
+            }else if (block_locate == "BlockB") {
+                if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
+                    player->Translate(move);
+                }
             }
         }
         if (key == GLFW_KEY_S) {
-            player->Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
+            glm::vec3 pos = player->GetPosition();
+            glm::vec3 move = glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor;
+            if (block_locate == "BlockA") {
+                if (pos.x + move.x > -30 && pos.x + move.x < 30 && pos.z + move.z > -30 && pos.z + move.z < 30) {
+                    player->Translate(move);
+                }
+            }
+            else if (block_locate == "BlockB") {
+                if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
+                    player->Translate(move);
+                }
+            }
             //game->camera_.Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
         }
         if (key == GLFW_KEY_A) {
-            player->Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
+            glm::vec3 pos = player->GetPosition();
+            glm::vec3 move = glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor;
+            if (block_locate == "BlockA") {
+                if (pos.x + move.x > -30 && pos.x + move.x < 30 && pos.z + move.z > -30 && pos.z + move.z < 30) {
+                    player->Translate(move);
+                }
+            }
+            else if (block_locate == "BlockB") {
+                if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
+                    player->Translate(move);
+                }
+            }
             //game->camera_.Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
         }
         if (key == GLFW_KEY_D) {
-            player->Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
+            glm::vec3 pos = player->GetPosition();
+            glm::vec3 move = glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor;
+            if (block_locate == "BlockA") {
+                if (pos.x + move.x > -30 && pos.x + move.x < 30 && pos.z + move.z > -30 && pos.z + move.z < 30) {
+                    player->Translate(move);
+                }
+            }
+            else if (block_locate == "BlockB") {
+                if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
+                    player->Translate(move);
+                }
+            }
             //game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
         }
         if (key == GLFW_KEY_SPACE) {
@@ -397,12 +440,19 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             }
         }
         
-        if (key == GLFW_KEY_C) {
-            game->ChangetoCastle();
-
-        }
-        if (key == GLFW_KEY_V) {
-            game->ChangetoVillage();
+        if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+            if (block_locate == "BlockA") {
+                //game->camera_.SetPosition(glm::vec3(115, 50, 80));
+                player->SetPosition(glm::vec3(115, 0, 80));
+                block_locate = "BlockB";
+                game->ChangetoCastle();
+            }
+            else if (block_locate == "BlockB") {
+                //game->camera_.SetPosition(glm::vec3(0.5, 50, 10));
+                player->SetPosition(glm::vec3(0, 0, 0));
+                block_locate = "BlockA";
+                game->ChangetoVillage();
+            }
 
         }
     }
@@ -685,5 +735,55 @@ void Game::CreateTreeField(int num_branches) {
     //set the vator of wind
     root->SetWind(glm::vec3(1, 0, 1));
 
+}
+
+void Game::CreateBlockA() {
+    std::vector<SceneNode*> wall_arr;
+    int wall_coordinate[12][2] = { {-20, -30}, {0, -30}, {20, -30}, {30, -20}, {30, 0}, {30, 20}, {20, 30}, {0, 30}, {-20, 30}, {-30, 20}, {-30, 0}, {-30, -20} };
+    float wall_angle[12] = { 0.0, 0.0, 0.0, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2,
+        glm::pi<float>(), glm::pi<float>(), glm::pi<float>(), glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2 };
+    for (int i = 0; i < 12; i++) {
+        std::stringstream ss;
+        ss << i;
+        std::string index = ss.str();
+        std::string name = "Wall" + index;
+        wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Wood"));
+    }
+    int index = 0;
+    for (SceneNode* wall : wall_arr) {
+        wall->SetAngle(wall_angle[index]);
+        wall->Rotate(glm::angleAxis((float)wall_angle[index], glm::vec3(0.0, 1.0, 0.0)));
+        wall->SetPosition(glm::vec3(wall_coordinate[index][0], 0, wall_coordinate[index][1]));
+        wall->Scale(glm::vec3(10, 10, 10));
+        index++;
+    }
+}
+
+void Game::CreateBlockB() {
+    std::vector<SceneNode*> wall_arr;
+    int wall_coordinate[16][2] = { {110, 110}, {130, 110}, {150, 110}, 
+                                    {160, 100}, {160, 80}, {160, 60}, {160, 40}, {160, 20}, 
+                                    {110, 10}, {130, 10}, {150, 10},
+                                    {100, 100}, {100, 80}, {100, 60}, {100, 40}, {100, 20},
+    };
+    float wall_angle[16] = { 0.0, 0.0, 0.0, 
+                        glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2,
+                        glm::pi<float>(), glm::pi<float>(), glm::pi<float>(),
+                        glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2 };
+    for (int i = 0; i < 16; i++) {
+        std::stringstream ss;
+        ss << i;
+        std::string index = ss.str();
+        std::string name = "Wall" + index;
+        wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Stone"));
+    }
+    int index = 0;
+    for (SceneNode* wall : wall_arr) {
+        wall->SetAngle(wall_angle[index]);
+        wall->Rotate(glm::angleAxis((float)wall_angle[index], glm::vec3(0.0, 1.0, 0.0)));
+        wall->SetPosition(glm::vec3(wall_coordinate[index][0], 0, wall_coordinate[index][1]));
+        wall->Scale(glm::vec3(10, 10, 10));
+        index++;
+    }
 }
 } // namespace game

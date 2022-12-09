@@ -8,7 +8,6 @@
 #include "scene_node.h"
 
 namespace game {
-
     SceneNode::SceneNode(const std::string name, const Resource* geometry, const Resource* material, const Resource* texture) {
 
         // Set name of scene node
@@ -148,11 +147,6 @@ namespace game {
         blending_ = blending;
     }
 
-    void SceneNode::SetPlayer(SceneNode* player) {
-
-        player_ = player;
-    }
-
     GLenum SceneNode::GetMode(void) const {
 
         return mode_;
@@ -182,22 +176,6 @@ namespace game {
         return material_;
     }
 
-
-    SceneNode* SceneNode::GetPlayer(void) const {
-        
-        return player_;
-    }
-
-    bool SceneNode::GetCollide(void) const {
-
-        return collide_;
-    }
-
-    void SceneNode::SetCollide(bool collide) {
-
-        collide_ = collide;
-    }
-
     void SceneNode::SetTrans(glm::mat4 o) {
         finaltrans_ = o;
     }
@@ -208,20 +186,6 @@ namespace game {
         return finaltrans_;
     }
 
-    void SceneNode::CollideDetect() {
-        SceneNode* player = GetPlayer();
-        float a = player->GetPosition().z - GetPosition().z;
-        float b = player->GetPosition().x - GetPosition().x;
-        float dis = glm::distance(player->GetPosition(), GetPosition());
-        float dis_collision = abs(dis * sin(atan(a / b) - GetAngle())) - player->GetRadius();
-        if (abs(dis_collision) < 1) {
-            player->SetCollide(true);
-            std::cout << GetName() << " collide detect: " << dis_collision << "\n";
-        }
-        else {
-            player->SetCollide(false);
-        }
-    }
 
     void SceneNode::Draw(Camera* camera, Light* light) {
 
@@ -232,9 +196,9 @@ namespace game {
 
             // Enable blending
             glEnable(GL_BLEND);
-            //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Simpler form
-            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Simpler form
+            //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            //glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
         }
         else {
             // Enable z-buffer
@@ -255,7 +219,6 @@ namespace game {
 
         // Set world matrix and other shader input variables
         SetupShader(material_);
-
         // Draw geometry
         if (mode_ == GL_POINTS) {
             glDrawArrays(mode_, 0, size_);

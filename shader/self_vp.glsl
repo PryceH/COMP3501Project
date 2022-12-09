@@ -33,7 +33,7 @@ void main()
     
     normal_interp = vec3(normal_mat * vec4(normal, 0.0));
 
-    color_interp = vec4(color, 1.0);
+    color_interp = vec4(color, 0.0);
 
     uv_interp = uv;
 }

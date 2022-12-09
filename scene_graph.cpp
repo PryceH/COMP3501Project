@@ -109,9 +109,6 @@ void SceneGraph::Draw(Camera *camera, Light *light){
 void SceneGraph::Update(void){
     for (int i = 0; i < node_.size(); i++){
         node_[i]->Update();
-        if (node_[i]->GetName().find("Wall") == 0) {
-            node_[i]->CollideDetect();
-        }
     }
 }
 

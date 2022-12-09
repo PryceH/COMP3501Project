@@ -93,6 +93,10 @@ namespace game {
             // Create tree
             void CreateTreeField(int num_branches);
 
+            // Create Map blocks
+            void CreateBlockA();
+            void CreateBlockB();
+
     }; // class Game
 
 } // namespace game

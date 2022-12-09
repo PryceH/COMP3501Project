@@ -2,6 +2,7 @@
 #define SCENE_NODE_H_
 
 #include <string>
+#include <vector>
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -59,7 +60,6 @@ namespace game {
         void Rotate(glm::quat rot);
         void Scale(glm::vec3 scale);
 
-        void CollideDetect();
         // Draw the node according to scene parameters in 'camera'
         // variable
         virtual void Draw(Camera* camera, Light*light);
@@ -88,10 +88,8 @@ namespace game {
         float radius_;
         float angle_;
         bool blending_; // Draw with blending or not
-        bool collide_ = false;
         glm::mat4 finaltrans_;//final tranformation
 
-        SceneNode* player_;
         // Set matrices that transform the node in a shader program
         void SetupShader(GLuint program);
 
