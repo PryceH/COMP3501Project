@@ -20,7 +20,7 @@ namespace game {
 
     public:
         // Create asteroid from given resources
-        Tree(const std::string name, const Resource* geometry, const Resource* material);
+        Tree(const std::string name, const Resource* geometry, const Resource* material,  const Resource* texture);
 
         // Destructor
         ~Tree();

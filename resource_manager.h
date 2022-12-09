@@ -36,7 +36,7 @@ namespace game {
             // Create the geometry for a sphere
             void CreateSphere(std::string object_name, float radius = 0.6, int num_samples_theta = 90, int num_samples_phi = 45);
             void CreateWall(std::string object_name);
-            void CreateSphereParticles(std::string object_name, int num_particles = 2000);
+            void CreateSphereParticles(std::string object_name, int num_particles = 20000);
             void CreateCylinder(std::string object_name, float height = 5, float circle_radius = 0.2, int num_height_samples = 90, int num_circle_samples = 30);
 
         private:
