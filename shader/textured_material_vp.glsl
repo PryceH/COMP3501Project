@@ -37,5 +37,5 @@ void main()
 
     uv_interp = uv;
 
-    //light_pos = vec3(view_mat * vec4(light_position, 1.0));
+    light_pos = vec3(view_mat * vec4(light_position, 1.0));
 }

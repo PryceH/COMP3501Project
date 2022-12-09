@@ -127,6 +127,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "Normal", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/self");
     resman_.LoadResource(Material, "Self", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/lit");
+    resman_.LoadResource(Material, "Light", filename.c_str());
 
     // Load material for screen-space effect
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
@@ -202,11 +204,12 @@ void Game::SetupResources(void){
     resman_.CreateWall("wall");
     resman_.CreateSphereParticles("FireParticles");
     resman_.CreateMagicParticles("MagicParticles");
-    resman_.CreateCylinder("self", 3, 1, 10, 45);
+    resman_.CreateCylinder("self", 1, 1, 10, 45);
 }
 
 
 void Game::SetupScene(void) {
+    CreateTreeField(5);
 
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
@@ -216,7 +219,7 @@ void Game::SetupScene(void) {
     
     
     player = CreateInstance<SceneNode>("Player", "self", "Self");
-    player->SetBlending(true);
+    //player->SetBlending(true);
     player->SetRadius(1.0);
     player->SetAngle(glm::pi<float>() / 2);
     player->SetPosition(glm::vec3(0,0,25));
@@ -234,7 +237,7 @@ void Game::SetupScene(void) {
 
     CreateSkyBox();
     
-    CreateTreeField(5);
+    
     CreateBlockA();
     CreateBlockB();
     Createbonfire(-22, -1.5, -22);
@@ -722,7 +725,7 @@ void Game::Createbonfire(float x, float y, float z) {
     c6->Rotate(rotation);
     game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     particles->SetPosition(glm::vec3(x, y, z));
-    particles->SetBlending(true);
+    //particles->SetBlending(true);
 
     //game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     //particles->SetPosition(glm::vec3(x, y+1, z));
@@ -764,7 +767,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     num += 1;
     float scale = main_tree->GetScale().x / 2;
     //x side branches
-    Tree* tree1 = CreateTreeInstance("tree", "tree", "TextureMaterial",tex);
+    Tree* tree1 = CreateTreeInstance("tree", "tree", "Light",tex);
     tree1->SetOrientation(main_tree->GetOrientation());
     tree1->SetScale(glm::vec3(scale, scale, scale));
     tree1->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, 4 * scale));
@@ -774,7 +777,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     tree1->SetFather(main_tree);
     Branches_grow(tree1, num, max_num);
     //-x side branches
-    Tree* tree2 = CreateTreeInstance("tree", "tree", "TextureMaterial", tex);
+    Tree* tree2 = CreateTreeInstance("tree", "tree", "Light", tex);
     tree2->SetOrientation(main_tree->GetOrientation());
     tree2->SetScale(glm::vec3(scale, scale, scale));
     tree2->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, -4 * scale));
@@ -784,7 +787,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     main_tree->SetSon(tree2);
     Branches_grow(tree2, num, max_num);
     //z side branches
-    Tree* tree3 = CreateTreeInstance("tree", "tree", "TextureMaterial", tex);
+    Tree* tree3 = CreateTreeInstance("tree", "tree", "Light", tex);
     tree3->SetOrientation(main_tree->GetOrientation());
     tree3->SetScale(glm::vec3(scale, scale, scale));
     tree3->SetPosition(glm::vec3(-4 * scale, 8 * scale + 4 * scale, 0));
@@ -794,7 +797,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     main_tree->SetSon(tree3);
     Branches_grow(tree3, num, max_num);
     //-z side branches
-    Tree* tree4 = CreateTreeInstance("tree", "tree", "TextureMaterial", tex);
+    Tree* tree4 = CreateTreeInstance("tree", "tree", "Light", tex);
     tree4->SetOrientation(main_tree->GetOrientation());
     tree4->SetScale(glm::vec3(scale, scale, scale));
     tree4->SetPosition(glm::vec3(4 * scale, 8 * scale + 4 * scale, 0));
@@ -811,7 +814,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
 void Game::CreateTreeField(int num_branches) {
 
     // Create root og tree
-    Tree* root = CreateTreeInstance("root", "tree", "TextureMaterial", "Wood");
+    Tree* root = CreateTreeInstance("root", "tree", "Light", "Wood");
     root->SetPosition(glm::vec3(0, 0, 0));
     // create branches
     Branches_grow(root, 0, 4);
