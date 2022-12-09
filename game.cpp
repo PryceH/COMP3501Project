@@ -21,7 +21,7 @@ float camera_near_clip_distance_g = 0.01;
 float camera_far_clip_distance_g = 1000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
-glm::vec3 camera_position_g(0.5, 0.5, 10.0);
+glm::vec3 camera_position_g(0.5, 5, 10.0);
 glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
@@ -184,6 +184,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Rock", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/land.png");
     resman_.LoadResource(Texture, "Land", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/door.jpg");
+    resman_.LoadResource(Texture, "Door", filename.c_str());
 
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
     resman_.LoadResource(Texture, "Cover", filename.c_str());
@@ -222,7 +224,7 @@ void Game::SetupScene(void) {
     //player->SetBlending(true);
     player->SetRadius(1.0);
     player->SetAngle(glm::pi<float>() / 2);
-    player->SetPosition(glm::vec3(0,0,25));
+    player->SetPosition(glm::vec3(0,-10,25));
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
     game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Land");
@@ -237,10 +239,10 @@ void Game::SetupScene(void) {
 
     CreateSkyBox();
     
-    
+    CreateTreeField(5);
     CreateBlockA();
     CreateBlockB();
-    Createbonfire(-22, -1.5, -22);
+    Createbonfire("bonfireB", -22, -1.5, 22);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -253,8 +255,13 @@ void Game::SetupScene(void) {
 
     //game::SceneNode* flame = CreateInstance<SceneNode>("fire", "FireParticles", "FireMaterial", "Flame");
     //flame->SetPosition(glm::vec3(0,1,-1));
-    game::SceneNode* magic = CreateInstance<SceneNode>("magic", "MagicParticles", "ParticleMagic", "Magic");
-    magic->SetPosition(glm::vec3(22, -0.5, -22));
+    game::SceneNode* magicA = CreateInstance<SceneNode>("magicA", "MagicParticles", "ParticleMagic", "Magic");
+    magicA->SetPosition(glm::vec3(22, -0.5, -22));
+    magicA->SetPlayer(player);
+
+    game::SceneNode* magicB = CreateInstance<SceneNode>("magicB", "MagicParticles", "ParticleMagic", "Magic");
+    magicB->SetPosition(glm::vec3(130, -0.5, 100));
+    magicB->SetPlayer(player);
 }
 
 
@@ -262,7 +269,7 @@ void Game::MainLoop(void){
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
-        camera_.SetPosition(player->GetPosition());
+        camera_.SetPosition(glm::vec3(player->GetPosition().x, camera_.GetPosition().y, player->GetPosition().z));
         // Animate the scene
         if (animating_){
             static double last_time = 0;
@@ -271,23 +278,8 @@ void Game::MainLoop(void){
                 if (game_start) {
                     scene_.GetNode("cover")->SetPosition(scene_.GetNode("cover")->GetPosition() + glm::vec3(0, -0.2, 0));
                 }
-                if (player->GetPosition().y > 0) {
-                    if (player_jump) {
-                        player->SetPosition(player->GetPosition() + glm::vec3(0, player_jump_accerlation, 0));
-                        player_jump_accerlation -= 0.2;
-                        if (player_jump_accerlation <= 0) {
-                            player_jump = false;
-                        }
-                    }else {
-                        player->SetPosition(player->GetPosition() + glm::vec3(0, -player_jump_accerlation, 0));
-                        if (player_jump_accerlation < 5.0) {
-                            player_jump_accerlation += 0.2;
-                        }
-                    }
-                }
-                else {
-                    player->SetPosition(glm::vec3(player->GetPosition().x, 0, player->GetPosition().z));
-                }
+
+                player->SetPosition(glm::vec3(player->GetPosition().x, -10, player->GetPosition().z));
                 light_.SetPosition(glm::vec3(cos(current_time) * 2, 0, sin(current_time) * 2));
                 
                 //scene_.Update();
@@ -511,11 +503,6 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             //game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
         }
         if (key == GLFW_KEY_SPACE) {
-            if (!player_jump && player_jump_accerlation == 5.0) {
-                player->Translate(glm::vec3(0, player_jump_accerlation, 0));
-                //game->camera_.Translate(glm::vec3(0, player_jump_accerlation, 0));
-                player_jump = true;
-            }
         }
         
         if (key == GLFW_KEY_C && action == GLFW_PRESS) {
@@ -693,33 +680,59 @@ void Game::CreateSkyBox() {
     //bottom->SetPosition(camera_.GetPosition() + glm::vec3(0, -1, 0));
 
 }
-void Game::Createbonfire(float x, float y, float z) {
-    game::SceneNode* c1 = CreateInstance<SceneNode>("c1", "SimpleCylinder", "TextureMaterial", "Wood");
+void Game::Createbonfire(std::string name, float x, float y, float z) {
+    std::stringstream ss;
+    std::string index;
+    std::string final_name;
+    ss << 1;
+    index = ss.str();
+    final_name = name + index;
+    game::SceneNode* c1 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
     c1->SetPosition(glm::vec3(x+0.1,y,z));
     glm::quat rotation = glm::angleAxis(glm::pi<float>()/4, glm::vec3(0.0, 0.0, 1.0));
     c1->Rotate(rotation);
 
-    game::SceneNode* c2 = CreateInstance<SceneNode>("c2", "SimpleCylinder", "TextureMaterial", "Wood");
+
+    ss << 2;
+    index = ss.str();
+    final_name = name + index;
+    game::SceneNode* c2 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
     c2->SetPosition(glm::vec3(x-0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(0.0, 0.0, 1.0));
     c2->Rotate(rotation);
 
-    game::SceneNode* c3 = CreateInstance<SceneNode>("c3", "SimpleCylinder", "TextureMaterial", "Wood");
+
+    ss << 3;
+    index = ss.str();
+    final_name = name + index;
+    game::SceneNode* c3 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
     c3->SetPosition(glm::vec3(x - 0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 1.0));
     c3->Rotate(rotation);
 
-    game::SceneNode* c4 = CreateInstance<SceneNode>("c4", "SimpleCylinder", "TextureMaterial", "Wood");
+
+    ss << 4;
+    index = ss.str();
+    final_name = name + index;
+    game::SceneNode* c4 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
     c4->SetPosition(glm::vec3(x, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, -1.0));
     c4->Rotate(rotation);
+    
 
-    game::SceneNode* c5 = CreateInstance<SceneNode>("c5", "SimpleCylinder", "TextureMaterial", "Wood");
+    ss << 5;
+    index = ss.str();
+    final_name = name + index;
+    game::SceneNode* c5 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
     c5->SetPosition(glm::vec3(x, y, z - 0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(-1.0, 0.0, 0.0));
     c5->Rotate(rotation);
 
-    game::SceneNode* c6 = CreateInstance<SceneNode>("c6", "SimpleCylinder", "TextureMaterial", "Wood");
+
+    ss << 6;
+    index = ss.str();
+    final_name = name + index;
+    game::SceneNode* c6 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
     c6->SetPosition(glm::vec3(x, y, z+0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 0.0));
     c6->Rotate(rotation);
@@ -864,7 +877,12 @@ void Game::CreateBlockB() {
         ss << i + 12;
         std::string index = ss.str();
         std::string name = "Wall" + index;
-        wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Stone"));
+        if (i == 12) {
+            wall_arr.push_back(CreateInstance<SceneNode>("Door", "wall", "TextureMaterial", "Door"));
+        }
+        else {
+            wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Stone"));
+        }
     }
     int index = 0;
     for (SceneNode* wall : wall_arr) {
@@ -872,6 +890,9 @@ void Game::CreateBlockB() {
         wall->Rotate(glm::angleAxis((float)wall_angle[index], glm::vec3(0.0, 1.0, 0.0)));
         wall->SetPosition(glm::vec3(wall_coordinate[index][0], 0, wall_coordinate[index][1]));
         wall->Scale(glm::vec3(10, 10, 10));
+        if (wall->GetName() == "Door") {
+            wall->SetPlayer(player);
+        }
         index++;
     }
 }

@@ -93,6 +93,25 @@ namespace game {
         return blending_;
     }
 
+    SceneNode* SceneNode::GetPlayer(void) const {
+
+        return player_;
+    }
+
+    std::string SceneNode::GetInteraction(void) const {
+
+        return interaction_;
+    }
+
+    void SceneNode::SetPlayer(SceneNode* player) {
+
+        player_ = player;
+    }
+
+    void SceneNode::SetInteraction(std::string interaction) {
+
+        interaction_ = interaction;
+    }
 
     void SceneNode::SetPosition(glm::vec3 position) {
 
@@ -230,7 +249,23 @@ namespace game {
 
 
     void SceneNode::Update(void) {
-
+        if (GetName().find("magic") == 0 || GetName().find("Door") == 0) {
+            if (GetPlayer()->GetInteraction() == GetName()) {
+                float distance = glm::distance(GetPlayer()->GetPosition(), GetPosition());
+                if (distance < 10) {
+                    GetPlayer()->SetInteraction(GetName());
+                }
+                else {
+                    GetPlayer()->SetInteraction("Nothing");
+                }
+            }
+            else if (GetPlayer()->GetInteraction() == "Nothing") {
+                float distance = glm::distance(GetPlayer()->GetPosition(), GetPosition());
+                if (distance < 10) {
+                    GetPlayer()->SetInteraction(GetName());
+                }
+            }
+        }
         // Do nothing for this generic type of scene node
     }
 
