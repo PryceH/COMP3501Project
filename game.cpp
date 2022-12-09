@@ -172,6 +172,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Wood", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/stone.jpg");
     resman_.LoadResource(Texture, "Stone", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/rocky.png");
+    resman_.LoadResource(Texture, "Rock", filename.c_str());
 
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
     resman_.LoadResource(Texture, "Cover", filename.c_str());
@@ -203,7 +205,7 @@ void Game::SetupScene(void) {
     // Create an instance of the torus mesh
     //game::SceneNode* torus = CreateInstance<SceneNode>("TorusInstance1", "TorusMesh", "ShinyBlueMaterial");
     
-    game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
+    
     player = CreateInstance<SceneNode>("Player", "self", "Self");
     player->SetBlending(true);
     player->SetRadius(1.0);
@@ -211,12 +213,18 @@ void Game::SetupScene(void) {
     player->SetPosition(glm::vec3(0,0,25));
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
+    game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
     floor->Rotate(rotation);
     floor->SetPosition(glm::vec3(0, -2, 0));
-    floor->Scale(glm::vec3(1000.5, 1000.5, 1000.5));
+    floor->Scale(glm::vec3(80.5, 80.5, 80.5));
+
+    game::SceneNode* floor2 = CreateInstance<SceneNode>("floor2", "wall", "TextureMaterial", "Rock");
+    floor2->Rotate(rotation);
+    floor2->SetPosition(glm::vec3(170, -2, 50));
+    floor2->Scale(glm::vec3(80, 80, 80));
 
     CreateSkyBox();
-    Createbonfire(0, -1, 4);
+    Createbonfire(-22, -1.5, -22);
     CreateTreeField(5);
     CreateBlockA();
     CreateBlockB();
