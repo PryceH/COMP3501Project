@@ -31,6 +31,7 @@ const std::string material_directory_g = MATERIAL_DIRECTORY;
 // behaviour
 SceneNode* player;
 bool player_jump = false;
+bool game_start = false;
 float player_jump_accerlation = 5.0;
 
 Game::Game(void){
@@ -169,6 +170,9 @@ void Game::SetupResources(void){
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/download.jpg");
     resman_.LoadResource(Texture, "Wood", filename.c_str());
 
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
+    resman_.LoadResource(Texture, "Cover", filename.c_str());
+
     // Create particles for explosion
     
 
@@ -220,6 +224,12 @@ void Game::SetupScene(void) {
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     torus->Scale(glm::vec3(1.5, 1.5, 1.5));
+
+    //cover
+    game::SceneNode* cover = CreateInstance("cover", "wall", "TextureMaterial", "Cover");
+    rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
+    cover->Rotate(rotation);
+    cover->SetPosition(camera_position_g + glm::vec3(0, 0, -4));
 }
 
 
@@ -232,6 +242,9 @@ void Game::MainLoop(void){
             static double last_time = 0;
             double current_time = glfwGetTime();
             if ((current_time - last_time) > 0.01){
+                if (game_start) {
+                    scene_.GetNode("cover")->SetPosition(scene_.GetNode("cover")->GetPosition() + glm::vec3(0, -0.2, 0));
+                }
                 if (player->GetPosition().y > 0) {
                     if (player_jump) {
                         player->SetPosition(player->GetPosition() + glm::vec3(0, player_jump_accerlation, 0));
@@ -324,68 +337,73 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_Q && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
     }
-
-    // Stop animation if space bar is pressed
+    if (game_start) {
+        // Stop animation if space bar is pressed
     /*if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
         game->animating_ = (game->animating_ == true) ? false : true;
     }*/
-    if (key == GLFW_KEY_E && action == GLFW_PRESS) {
-        game->effect = (game->effect == true) ? false : true;
-    }
-    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-        game->effect2 = (game->effect2 == true) ? false : true;
-    }
+        if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+            game->effect = (game->effect == true) ? false : true;
+        }
+        if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+            game->effect2 = (game->effect2 == true) ? false : true;
+        }
 
-    // View control
-    float rot_factor(glm::pi<float>() / 180);
-    float trans_factor = 1.0;
-    if (key == GLFW_KEY_UP){
-        game->camera_.Pitch(2 * rot_factor);
-    }
-    if (key == GLFW_KEY_DOWN){
-        game->camera_.Pitch(-2 * rot_factor);
-    }
-    if (key == GLFW_KEY_LEFT){
-        game->camera_.Yaw(2 * rot_factor);
-    }
-    if (key == GLFW_KEY_RIGHT){
-        game->camera_.Yaw(-2 * rot_factor);
-    }
+        // View control
+        float rot_factor(glm::pi<float>() / 180);
+        float trans_factor = 1.0;
+        if (key == GLFW_KEY_UP) {
+            game->camera_.Pitch(2 * rot_factor);
+        }
+        if (key == GLFW_KEY_DOWN) {
+            game->camera_.Pitch(-2 * rot_factor);
+        }
+        if (key == GLFW_KEY_LEFT) {
+            game->camera_.Yaw(2 * rot_factor);
+        }
+        if (key == GLFW_KEY_RIGHT) {
+            game->camera_.Yaw(-2 * rot_factor);
+        }
 
-    if (key == GLFW_KEY_W){
-        player->Translate(glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor);
-        //game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
-    }
-    if (key == GLFW_KEY_S){
-        player->Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
-        //game->camera_.Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
-    }
-    if (key == GLFW_KEY_A) {
-        player->Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
-        //game->camera_.Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
-    }
-    if (key == GLFW_KEY_D){
-        player->Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
-        //game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
-    }
-    if (key == GLFW_KEY_SPACE){
-        if (!player_jump && player_jump_accerlation == 5.0) {
-            player->Translate(glm::vec3(0, player_jump_accerlation, 0));
-            //game->camera_.Translate(glm::vec3(0, player_jump_accerlation, 0));
-            player_jump = true;
+        if (key == GLFW_KEY_W) {
+            player->Translate(glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor);
+            //game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
+        }
+        if (key == GLFW_KEY_S) {
+            player->Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
+            //game->camera_.Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
+        }
+        if (key == GLFW_KEY_A) {
+            player->Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
+            //game->camera_.Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
+        }
+        if (key == GLFW_KEY_D) {
+            player->Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
+            //game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
+        }
+        if (key == GLFW_KEY_SPACE) {
+            if (!player_jump && player_jump_accerlation == 5.0) {
+                player->Translate(glm::vec3(0, player_jump_accerlation, 0));
+                //game->camera_.Translate(glm::vec3(0, player_jump_accerlation, 0));
+                player_jump = true;
+            }
+        }
+        
+        if (key == GLFW_KEY_C) {
+            game->ChangetoCastle();
+
+        }
+        if (key == GLFW_KEY_V) {
+            game->ChangetoVillage();
+
         }
     }
-    if (key == GLFW_KEY_K){
-        game->camera_.Translate(-game->camera_.GetUp()* trans_factor);
+    else {
+        if (key == GLFW_KEY_K) {
+            game_start = true;
+        }
     }
-    if (key == GLFW_KEY_C) {
-        game->ChangetoCastle();
-
-    }
-    if (key == GLFW_KEY_V) {
-        game->ChangetoVillage();
-
-    }
+    
     
 }
 void Game::ChangetoCastle() {
