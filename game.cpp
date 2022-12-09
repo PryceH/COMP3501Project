@@ -842,16 +842,20 @@ void Game::CreateTreeField(int num_branches) {
     Tree* root = CreateTreeInstance("root", "tree", "Light", "Wood");
     root->SetPosition(glm::vec3(-25, 0, -25));
     Branches_grow(root, 0, 3);
+    root->SetWind(glm::vec3(1, 0, 1));
     root = CreateTreeInstance("root", "tree", "Light", "Wood");
     root->SetPosition(glm::vec3(25, 0, 25));
     Branches_grow(root, 0, 3);
+    root->SetWind(glm::vec3(1, 0, 1));
     root = CreateTreeInstance("root", "tree", "Light", "Wood");
     root->SetPosition(glm::vec3(-25, 0, 25));
     Branches_grow(root, 0, 3);
+    root->SetWind(glm::vec3(1, 0, 1));
     // create branches
     
     //set the vator of wind
-    root->SetWind(glm::vec3(1, 0, 1));
+    
+
 
 }
 
