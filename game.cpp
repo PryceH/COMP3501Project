@@ -180,6 +180,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Stone", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/rocky.png");
     resman_.LoadResource(Texture, "Rock", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/land.png");
+    resman_.LoadResource(Texture, "Land", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/door.jpg");
     resman_.LoadResource(Texture, "Door", filename.c_str());
 
@@ -222,7 +224,7 @@ void Game::SetupScene(void) {
     player->SetPosition(glm::vec3(0,0,25));
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
-    game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
+    game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Land");
     floor->Rotate(rotation);
     floor->SetPosition(glm::vec3(0, -2, 0));
     floor->Scale(glm::vec3(80.5, 80.5, 80.5));
@@ -233,10 +235,11 @@ void Game::SetupScene(void) {
     floor2->Scale(glm::vec3(80, 80, 80));
 
     CreateSkyBox();
-    Createbonfire("bonfireA", - 22, -1.5, -22);
+    Createbonfire(-22, -1.5, -22);
     CreateTreeField(5);
     CreateBlockA();
     CreateBlockB();
+    Createbonfire(-22, -1.5, -22);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -752,7 +755,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     c6->Rotate(rotation);
     game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     particles->SetPosition(glm::vec3(x, y, z));
-    //particles->SetBlending(true);
+    particles->SetBlending(true);
 
     //game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     //particles->SetPosition(glm::vec3(x, y+1, z));
