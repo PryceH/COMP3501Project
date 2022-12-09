@@ -21,7 +21,7 @@ float camera_near_clip_distance_g = 0.01;
 float camera_far_clip_distance_g = 1000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
-glm::vec3 camera_position_g(0.5, 0.5, 10.0);
+glm::vec3 camera_position_g(0.5, 5, 10.0);
 glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
@@ -218,10 +218,10 @@ void Game::SetupScene(void) {
     
     
     player = CreateInstance<SceneNode>("Player", "self", "Self");
-    player->SetBlending(true);
+    //player->SetBlending(true);
     player->SetRadius(1.0);
     player->SetAngle(glm::pi<float>() / 2);
-    player->SetPosition(glm::vec3(0,0,25));
+    player->SetPosition(glm::vec3(0,-10,25));
 
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
     game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Land");
@@ -235,11 +235,11 @@ void Game::SetupScene(void) {
     floor2->Scale(glm::vec3(80, 80, 80));
 
     CreateSkyBox();
-    Createbonfire(-22, -1.5, -22);
+    Createbonfire("bonfireA", -22, -1.5, -22);
     CreateTreeField(5);
     CreateBlockA();
     CreateBlockB();
-    Createbonfire(-22, -1.5, -22);
+    Createbonfire("bonfireB", -22, -1.5, 22);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -266,7 +266,7 @@ void Game::MainLoop(void){
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
-        camera_.SetPosition(player->GetPosition());
+        camera_.SetPosition(glm::vec3(player->GetPosition().x, camera_.GetPosition().y, player->GetPosition().z));
         // Animate the scene
         if (animating_){
             static double last_time = 0;
@@ -275,23 +275,8 @@ void Game::MainLoop(void){
                 if (game_start) {
                     scene_.GetNode("cover")->SetPosition(scene_.GetNode("cover")->GetPosition() + glm::vec3(0, -0.2, 0));
                 }
-                if (player->GetPosition().y > 0) {
-                    if (player_jump) {
-                        player->SetPosition(player->GetPosition() + glm::vec3(0, player_jump_accerlation, 0));
-                        player_jump_accerlation -= 0.2;
-                        if (player_jump_accerlation <= 0) {
-                            player_jump = false;
-                        }
-                    }else {
-                        player->SetPosition(player->GetPosition() + glm::vec3(0, -player_jump_accerlation, 0));
-                        if (player_jump_accerlation < 5.0) {
-                            player_jump_accerlation += 0.2;
-                        }
-                    }
-                }
-                else {
-                    player->SetPosition(glm::vec3(player->GetPosition().x, 0, player->GetPosition().z));
-                }
+
+                player->SetPosition(glm::vec3(player->GetPosition().x, -10, player->GetPosition().z));
                 light_.SetPosition(glm::vec3(cos(current_time) * 2, 0, sin(current_time) * 2));
                 
                 //scene_.Update();
@@ -515,11 +500,6 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             //game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
         }
         if (key == GLFW_KEY_SPACE) {
-            if (!player_jump && player_jump_accerlation == 5.0) {
-                player->Translate(glm::vec3(0, player_jump_accerlation, 0));
-                //game->camera_.Translate(glm::vec3(0, player_jump_accerlation, 0));
-                player_jump = true;
-            }
         }
         
         if (key == GLFW_KEY_C && action == GLFW_PRESS) {
