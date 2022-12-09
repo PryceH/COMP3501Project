@@ -137,8 +137,8 @@ void Game::SetupResources(void){
     // Load material to be applied to particles
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/magic");
     resman_.LoadResource(Material, "ParticleMagic", filename.c_str());
-    //filename = std::string(MATERIAL_DIRECTORY) + std::string("/fire");
-    //resman_.LoadResource(Material, "FireMaterial", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/fire");
+    resman_.LoadResource(Material, "FireMaterial", filename.c_str());
 
     //Load texture
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/skybox/front.jpg");
@@ -238,14 +238,17 @@ void Game::SetupScene(void) {
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
-    /*game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
-    particles->SetPosition(glm::vec3(0,1,-1));*/
     //particles->SetBlending(true);
     //cover
     game::SceneNode* cover = CreateInstance<SceneNode>("cover", "wall", "TextureMaterial", "Cover");
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
     cover->Rotate(rotation);
     cover->SetPosition(camera_position_g + glm::vec3(0, 0, -4));
+
+    game::SceneNode* flame = CreateInstance<SceneNode>("fire", "FireParticles", "FireMaterial", "Flame");
+    flame->SetPosition(glm::vec3(0,1,-1));
+    game::SceneNode* magic = CreateInstance<SceneNode>("magic", "MagicParticles", "ParticleMagic", "Magic");
+    magic->SetPosition(glm::vec3(1, 0, 1));
 }
 
 
