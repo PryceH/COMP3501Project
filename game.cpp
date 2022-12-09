@@ -540,8 +540,8 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     
 }
 void Game::ChangetoCastle() {
-    scene_.GetNode("front")->SetTexture(resman_.GetResource("FrontTexture2"));
-    scene_.GetNode("back")->SetTexture(resman_.GetResource("BackTexture2"));
+    scene_.GetNode("front")->SetTexture(resman_.GetResource("BackTexture2"));
+    scene_.GetNode("back")->SetTexture(resman_.GetResource("FrontTexture2"));
     scene_.GetNode("left")->SetTexture(resman_.GetResource("LeftTexture2"));
     scene_.GetNode("right")->SetTexture(resman_.GetResource("RightTexture2"));
     scene_.GetNode("top")->SetTexture(resman_.GetResource("TopTexture2"));
@@ -757,10 +757,14 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     if (num == max_num) {
         return;
     }
+    std::string tex = "Wood";
+    if (num == max_num - 1|| num == max_num - 2) {
+        tex = "Land";
+    }
     num += 1;
     float scale = main_tree->GetScale().x / 2;
     //x side branches
-    Tree* tree1 = CreateTreeInstance("tree", "tree", "TextureMaterial");
+    Tree* tree1 = CreateTreeInstance("tree", "tree", "TextureMaterial",tex);
     tree1->SetOrientation(main_tree->GetOrientation());
     tree1->SetScale(glm::vec3(scale, scale, scale));
     tree1->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, 4 * scale));
@@ -770,7 +774,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     tree1->SetFather(main_tree);
     Branches_grow(tree1, num, max_num);
     //-x side branches
-    Tree* tree2 = CreateTreeInstance("tree", "tree", "TextureMaterial");
+    Tree* tree2 = CreateTreeInstance("tree", "tree", "TextureMaterial", tex);
     tree2->SetOrientation(main_tree->GetOrientation());
     tree2->SetScale(glm::vec3(scale, scale, scale));
     tree2->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, -4 * scale));
@@ -780,7 +784,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     main_tree->SetSon(tree2);
     Branches_grow(tree2, num, max_num);
     //z side branches
-    Tree* tree3 = CreateTreeInstance("tree", "tree", "TextureMaterial");
+    Tree* tree3 = CreateTreeInstance("tree", "tree", "TextureMaterial", tex);
     tree3->SetOrientation(main_tree->GetOrientation());
     tree3->SetScale(glm::vec3(scale, scale, scale));
     tree3->SetPosition(glm::vec3(-4 * scale, 8 * scale + 4 * scale, 0));
@@ -790,7 +794,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     main_tree->SetSon(tree3);
     Branches_grow(tree3, num, max_num);
     //-z side branches
-    Tree* tree4 = CreateTreeInstance("tree", "tree", "TextureMaterial");
+    Tree* tree4 = CreateTreeInstance("tree", "tree", "TextureMaterial", tex);
     tree4->SetOrientation(main_tree->GetOrientation());
     tree4->SetScale(glm::vec3(scale, scale, scale));
     tree4->SetPosition(glm::vec3(4 * scale, 8 * scale + 4 * scale, 0));
