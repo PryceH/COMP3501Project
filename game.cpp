@@ -688,7 +688,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 1;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c1 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c1 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c1->SetPosition(glm::vec3(x+0.1,y,z));
     glm::quat rotation = glm::angleAxis(glm::pi<float>()/4, glm::vec3(0.0, 0.0, 1.0));
     c1->Rotate(rotation);
@@ -697,7 +697,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 2;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c2 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c2 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c2->SetPosition(glm::vec3(x-0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(0.0, 0.0, 1.0));
     c2->Rotate(rotation);
@@ -706,7 +706,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 3;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c3 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c3 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c3->SetPosition(glm::vec3(x - 0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 1.0));
     c3->Rotate(rotation);
@@ -715,7 +715,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 4;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c4 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c4 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c4->SetPosition(glm::vec3(x, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, -1.0));
     c4->Rotate(rotation);
@@ -724,7 +724,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 5;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c5 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c5 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c5->SetPosition(glm::vec3(x, y, z - 0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(-1.0, 0.0, 0.0));
     c5->Rotate(rotation);
@@ -733,7 +733,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 6;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c6 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c6 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c6->SetPosition(glm::vec3(x, y, z+0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 0.0));
     c6->Rotate(rotation);
