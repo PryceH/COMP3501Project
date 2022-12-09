@@ -271,6 +271,7 @@ void Game::SetupScene(void) {
     game::SceneNode* magicB = CreateInstance<SceneNode>("magicB", "MagicParticles", "ParticleMagic", "Magic");
     magicB->SetPosition(glm::vec3(130, -0.5, 100));
     magicB->SetPlayer(player);
+    light_.SetPosition(glm::vec3(0,10,0));
 }
 
 
@@ -289,7 +290,7 @@ void Game::MainLoop(void){
                 }
 
                 player->SetPosition(glm::vec3(player->GetPosition().x, -10, player->GetPosition().z));
-                light_.SetPosition(glm::vec3(cos(current_time) * 2, 0, sin(current_time) * 2));
+                
                 
                 //scene_.Update();
 
@@ -697,7 +698,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 1;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c1 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c1 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c1->SetPosition(glm::vec3(x+0.1,y,z));
     glm::quat rotation = glm::angleAxis(glm::pi<float>()/4, glm::vec3(0.0, 0.0, 1.0));
     c1->Rotate(rotation);
@@ -706,7 +707,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 2;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c2 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c2 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c2->SetPosition(glm::vec3(x-0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(0.0, 0.0, 1.0));
     c2->Rotate(rotation);
@@ -715,7 +716,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 3;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c3 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c3 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c3->SetPosition(glm::vec3(x - 0.1, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 1.0));
     c3->Rotate(rotation);
@@ -724,7 +725,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 4;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c4 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c4 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c4->SetPosition(glm::vec3(x, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, -1.0));
     c4->Rotate(rotation);
@@ -733,7 +734,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 5;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c5 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c5 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c5->SetPosition(glm::vec3(x, y, z - 0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(-1.0, 0.0, 0.0));
     c5->Rotate(rotation);
@@ -742,7 +743,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 6;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c6 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    game::SceneNode* c6 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
     c6->SetPosition(glm::vec3(x, y, z+0.1));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 0.0));
     c6->Rotate(rotation);
@@ -836,11 +837,19 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
 
 void Game::CreateTreeField(int num_branches) {
 
+
     // Create root og tree
     Tree* root = CreateTreeInstance("root", "tree", "Light", "Wood");
     root->SetPosition(glm::vec3(0, 0, 0));
+    Branches_grow(root, 0, 3);
+    root = CreateTreeInstance("root", "tree", "Light", "Wood");
+    root->SetPosition(glm::vec3(6, 0, 6));
+    Branches_grow(root, 0, 3);
+    root = CreateTreeInstance("root", "tree", "Light", "Wood");
+    root->SetPosition(glm::vec3(6, 0, -6));
+    Branches_grow(root, 0, 3);
     // create branches
-    Branches_grow(root, 0, 4);
+    
     //set the vator of wind
     root->SetWind(glm::vec3(1, 0, 1));
 

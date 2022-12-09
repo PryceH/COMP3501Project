@@ -30,7 +30,7 @@ void main()
 	float diffuse = dot(n,lv);
 
 	//Phong(V.R)
-	float spec = max(0.0,dot(vv,r));
+	float spec = max(0.0,dot(n,h));
 	//float spec = max(0.0,dot(view_mat,r));
 
 	spec = pow(spec,41);
