@@ -22,7 +22,7 @@ float camera_far_clip_distance_g = 1000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
 glm::vec3 camera_position_g(0.5, 5, 10.0);
-glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
+glm::vec3 camera_look_at_g(0.0, 5.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
 // Materials 
@@ -234,8 +234,17 @@ void Game::SetupScene(void) {
 
     game::SceneNode* floor2 = CreateInstance<SceneNode>("floor2", "wall", "TextureMaterial", "Rock");
     floor2->Rotate(rotation);
-    floor2->SetPosition(glm::vec3(170, -2, 50));
+    floor2->SetPosition(glm::vec3(170, -2, 90));
     floor2->Scale(glm::vec3(80, 80, 80));
+
+    game::SceneNode* floor3 = CreateInstance<SceneNode>("floor3", "wall", "TextureMaterial", "Rock");
+    floor3->Rotate(glm::angleAxis(-glm::pi<float>() / 2 - glm::pi<float>() / 18, glm::vec3(1.0, 0.0, 0.0)));
+    floor3->SetPosition(glm::vec3(170, -18, -68));
+    floor3->Scale(glm::vec3(80, 80, 80));
+
+    game::SceneNode* floor4 = CreateInstance<SceneNode>("floor4", "wall", "TextureMaterial", "Rock");
+    floor4->SetPosition(glm::vec3(130, -12, 10));
+    floor4->Scale(glm::vec3(10, 10, 10));
 
     CreateSkyBox();
     
@@ -861,6 +870,7 @@ void Game::CreateBlockA() {
 
 void Game::CreateBlockB() {
     std::vector<SceneNode*> wall_arr;
+    std::vector<SceneNode*> wall_arr_complement;
     int wall_coordinate[25][2] = { {110, 110}, {130, 110}, {150, 110}, 
                                     {160, 100}, {160, 80}, {160, 60}, {160, 40}, {160, 20}, {160, 0}, {160, -20}, {160, -40},
                                     {110, 10}, {130, 10}, {150, 10},
@@ -873,6 +883,8 @@ void Game::CreateBlockB() {
                         glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2,
                         glm::pi<float>(), glm::pi<float>(), glm::pi<float>()
     };
+    int wall_coordinate_complement[5][2] = { {110, -50}, {130, -50}, {150, -50}, {160, -40}, {100, -40}};
+    float wall_angle_complement[5] = { 0.0, 0.0, 0.0, glm::pi<float>() / 2, glm::pi<float>() / 2 };
     for (int i = 0; i < 25; i++) {
         std::stringstream ss;
         ss << i + 12;
@@ -885,6 +897,14 @@ void Game::CreateBlockB() {
             wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Stone"));
         }
     }
+    for (int i = 0; i < 5; i++) {
+        std::stringstream ss;
+        ss << i + 12 + 25;
+        std::string index = ss.str();
+        std::string name = "Wall" + index;
+        wall_arr_complement.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Stone"));
+    }
+
     int index = 0;
     for (SceneNode* wall : wall_arr) {
         wall->SetAngle(wall_angle[index]);
@@ -892,8 +912,18 @@ void Game::CreateBlockB() {
         wall->SetPosition(glm::vec3(wall_coordinate[index][0], 0, wall_coordinate[index][1]));
         wall->Scale(glm::vec3(10, 10, 10));
         if (wall->GetName() == "Door") {
+
+            wall->SetPosition(glm::vec3(wall_coordinate[index][0], -20, wall_coordinate[index][1]));
             wall->SetPlayer(player);
         }
+        index++;
+    }
+    index = 0;
+    for (SceneNode* wall : wall_arr_complement) {
+        wall->SetAngle(wall_angle_complement[index]);
+        wall->Rotate(glm::angleAxis((float)wall_angle_complement[index], glm::vec3(0.0, 1.0, 0.0)));
+        wall->SetPosition(glm::vec3(wall_coordinate_complement[index][0], -20, wall_coordinate_complement[index][1]));
+        wall->Scale(glm::vec3(10, 10, 10));
         index++;
     }
 }
