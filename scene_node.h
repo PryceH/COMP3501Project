@@ -36,6 +36,7 @@ namespace game {
         float GetAngle(void) const;
         bool GetBlending(void) const;
         SceneNode* GetPlayer(void) const;
+        bool GetCollide(void) const;
 
         void SetTrans(glm::mat4 o);
         //get final transformation
@@ -50,6 +51,7 @@ namespace game {
         void SetAngle(float angle);
         void SetTexture(Resource* texture);
         void SetPlayer(SceneNode* player);
+        void SetCollide(bool collide);
 
 
         // Perform transformations on node
@@ -86,6 +88,7 @@ namespace game {
         float radius_;
         float angle_;
         bool blending_; // Draw with blending or not
+        bool collide_ = false;
         glm::mat4 finaltrans_;//final tranformation
 
         SceneNode* player_;

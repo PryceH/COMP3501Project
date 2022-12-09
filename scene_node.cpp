@@ -188,6 +188,16 @@ namespace game {
         return player_;
     }
 
+    bool SceneNode::GetCollide(void) const {
+
+        return collide_;
+    }
+
+    void SceneNode::SetCollide(bool collide) {
+
+        collide_ = collide;
+    }
+
     void SceneNode::SetTrans(glm::mat4 o) {
         finaltrans_ = o;
     }
@@ -204,7 +214,13 @@ namespace game {
         float b = player->GetPosition().x - GetPosition().x;
         float dis = glm::distance(player->GetPosition(), GetPosition());
         float dis_collision = abs(dis * sin(atan(a / b) - GetAngle())) - player->GetRadius();
-        std::cout << "collide detect: " << dis_collision << "\n";
+        if (abs(dis_collision) < 1) {
+            player->SetCollide(true);
+            std::cout << GetName() << " collide detect: " << dis_collision << "\n";
+        }
+        else {
+            player->SetCollide(false);
+        }
     }
 
     void SceneNode::Draw(Camera* camera, Light* light) {

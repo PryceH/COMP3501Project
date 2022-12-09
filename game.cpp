@@ -198,23 +198,24 @@ void Game::SetupScene(void) {
     scene_.SetBackgroundColor(viewport_background_color_g);
 
     // Create an instance of the torus mesh
-    game::SceneNode* torus = CreateInstance<SceneNode>("TorusInstance1", "TorusMesh", "ShinyBlueMaterial");
+    //game::SceneNode* torus = CreateInstance<SceneNode>("TorusInstance1", "TorusMesh", "ShinyBlueMaterial");
     //game::SceneNode* particles = CreateInstance("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
     game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Wood");
     player = CreateInstance<SceneNode>("Player", "self", "Self");
     game::SceneNode* wall = CreateInstance<SceneNode>("Wall", "wall", "TextureMaterial", "Wood");
 
     player->SetRadius(1.0);
+    player->SetAngle(90.0);
+
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
     floor->Rotate(rotation);
     floor->SetPosition(glm::vec3(0, -2, 0));
     floor->Scale(glm::vec3(1000.5, 1000.5, 1000.5));
-  
 
     rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(0.0, 1.0, 0.0));
     wall->SetAngle(glm::pi<float>() / 2);
     wall->Rotate(rotation);
-    wall->SetPosition(glm::vec3(100, 0, 0));
+    wall->SetPosition(glm::vec3(0, 0, 100));
     wall->Scale(glm::vec3(10, 10, 10));
     wall->SetPlayer(player);
 
@@ -223,10 +224,10 @@ void Game::SetupScene(void) {
     CreateTreeField(5);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
-    torus->Scale(glm::vec3(1.5, 1.5, 1.5));
+    //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
 
     //cover
-    game::SceneNode* cover = CreateInstance("cover", "wall", "TextureMaterial", "Cover");
+    game::SceneNode* cover = CreateInstance<SceneNode>("cover", "wall", "TextureMaterial", "Cover");
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
     cover->Rotate(rotation);
     cover->SetPosition(camera_position_g + glm::vec3(0, 0, -4));
@@ -350,24 +351,31 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         }
 
         // View control
-        float rot_factor(glm::pi<float>() / 180);
+        float rot_factor = 2 * (glm::pi<float>() / 180);
         float trans_factor = 1.0;
         if (key == GLFW_KEY_UP) {
-            game->camera_.Pitch(2 * rot_factor);
+            game->camera_.Pitch(rot_factor);
         }
         if (key == GLFW_KEY_DOWN) {
-            game->camera_.Pitch(-2 * rot_factor);
+            game->camera_.Pitch(-rot_factor);
         }
         if (key == GLFW_KEY_LEFT) {
-            game->camera_.Yaw(2 * rot_factor);
+            game->camera_.Yaw(rot_factor);
+            player->SetAngle(player->GetAngle()+rot_factor);
         }
         if (key == GLFW_KEY_RIGHT) {
-            game->camera_.Yaw(-2 * rot_factor);
+            game->camera_.Yaw(-rot_factor);
+            player->SetAngle(player->GetAngle()-rot_factor);
         }
 
         if (key == GLFW_KEY_W) {
-            player->Translate(glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor);
             //game->camera_.Translate(glm::vec3(game->camera_.GetForward().x,0, game->camera_.GetForward().z) * trans_factor);
+            if (player->GetCollide()) {
+
+            }
+            else {
+                player->Translate(glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor);
+            }
         }
         if (key == GLFW_KEY_S) {
             player->Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
