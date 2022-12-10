@@ -99,7 +99,7 @@ namespace game {
         if (GetName().find("root") == 0) {
             if (GetPlayer()->GetInteraction() == GetName()) {
                 float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
-                if (distance < 25) {
+                if (distance < 30) {
                     GetPlayer()->SetInteraction(GetName());
                 }
                 else {
@@ -108,7 +108,7 @@ namespace game {
             }
             else if (GetPlayer()->GetInteraction() == "Nothing") {
                 float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
-                if (distance < 25) {
+                if (distance < 30) {
                     GetPlayer()->SetInteraction(GetName());
                 }
             }

@@ -201,7 +201,6 @@ void Game::SetupResources(void){
     
 
 
-
     // Setup drawing to texture
     scene_.SetupDrawToTexture();
 
@@ -584,6 +583,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             std::string interaction = player->GetInteraction();
 
 
+            std::cout << "Interact with " << interaction << "\n";
             if (interaction == "magicA") {
                 game->ChangetoCastle();
             }
@@ -594,8 +594,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                 door_open = true;
             }
             else if (interaction == "root1" || interaction == "root2" || interaction == "root3") {
-
-                game->CheckCode(interaction);
+                game->CheckCode(game, interaction);
               
             }
 
@@ -608,28 +607,87 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     
 }
-void Game::CheckCode(std::string name) {
+void Game::CheckCode(Game* game, std::string name) {
 
+    Tree* tree = (Tree*)game->scene_.GetNode(name);
     if (code != 3) {
         if (name == "root1" && code == 0) {
             code = 1;
-
-        }
-        else {
-            code = 0;
-        }
-        if (name == "root2" && code == 1) {
+            tree->SetTexture(game->resman_.GetResource("Stone"));
+            for (Tree* br : tree->GetSon()) {
+                for (Tree* br_br : br->GetSon()) {
+                    for (Tree* br_br_br : br_br->GetSon()) {
+                        br_br_br->SetTexture(game->resman_.GetResource("Stone"));
+                    }
+                    br_br->SetTexture(game->resman_.GetResource("Stone"));
+                }
+                br->SetTexture(game->resman_.GetResource("Stone"));
+            }
+            
+            std::cout << "root1" << "\n";
+        }else if (name == "root2" && code == 1) {
             code = 2;
-        }
-        else {
-            code = 0;
-        }
-        if (name == "root3" && code == 2) {
+            tree->SetTexture(game->resman_.GetResource("Stone"));
+            for (Tree* br : tree->GetSon()) {
+                for (Tree* br_br : br->GetSon()) {
+                    for (Tree* br_br_br : br_br->GetSon()) {
+                        br_br_br->SetTexture(game->resman_.GetResource("Stone"));
+                    }
+                    br_br->SetTexture(game->resman_.GetResource("Stone"));
+                }
+                br->SetTexture(game->resman_.GetResource("Stone"));
+            }
+            std::cout << "root2" << "\n";
+        }else if (name == "root3" && code == 2) {
             code = 3;
+            tree->SetTexture(game->resman_.GetResource("Stone"));
+            for (Tree* br : tree->GetSon()) {
+                for (Tree* br_br : br->GetSon()) {
+                    for (Tree* br_br_br : br_br->GetSon()) {
+                        br_br_br->SetTexture(game->resman_.GetResource("Stone"));
+                    }
+                    br_br->SetTexture(game->resman_.GetResource("Stone"));
+                }
+                br->SetTexture(game->resman_.GetResource("Stone"));
+            }
+            std::cout << "root3" << "\n";
             key = true;
         }
         else {
             code = 0;
+            tree = (Tree*)game->scene_.GetNode("root1");
+            tree->SetTexture(game->resman_.GetResource("Wood"));
+            for (Tree* br : tree->GetSon()) {
+                for (Tree* br_br : br->GetSon()) {
+                    for (Tree* br_br_br : br_br->GetSon()) {
+                        br_br_br->SetTexture(game->resman_.GetResource("Land"));
+                    }
+                    br_br->SetTexture(game->resman_.GetResource("Land"));
+                }
+                br->SetTexture(game->resman_.GetResource("Wood"));
+            }
+            tree = (Tree*)game->scene_.GetNode("root2");
+            tree->SetTexture(game->resman_.GetResource("Wood"));
+            for (Tree* br : tree->GetSon()) {
+                for (Tree* br_br : br->GetSon()) {
+                    for (Tree* br_br_br : br_br->GetSon()) {
+                        br_br_br->SetTexture(game->resman_.GetResource("Land"));
+                    }
+                    br_br->SetTexture(game->resman_.GetResource("Land"));
+                }
+                br->SetTexture(game->resman_.GetResource("Wood"));
+            }
+            tree = (Tree*)game->scene_.GetNode("root3");
+            tree->SetTexture(game->resman_.GetResource("Wood"));
+            for (Tree* br : tree->GetSon()) {
+                for (Tree* br_br : br->GetSon()) {
+                    for (Tree* br_br_br : br_br->GetSon()) {
+                        br_br_br->SetTexture(game->resman_.GetResource("Land"));
+                    }
+                    br_br->SetTexture(game->resman_.GetResource("Land"));
+                }
+                br->SetTexture(game->resman_.GetResource("Wood"));
+            }
         }
     }
     

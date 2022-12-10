@@ -85,7 +85,7 @@ namespace game {
             void Createbonfire(std::string name, float x, float y, float z);
             void ChangetoCastle();
             void ChangetoVillage();
-            void CheckCode(std::string name);
+            void CheckCode(Game* game, std::string name);
 
             // Create an instance of an object stored in the resource manager
             template <class Instance> 
