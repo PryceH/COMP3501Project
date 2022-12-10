@@ -229,20 +229,26 @@ void Game::SetupScene(void) {
     glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
     game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Land");
     floor->Rotate(rotation);
+    floor->SetAngle(0.0);
     floor->SetPosition(glm::vec3(0, -2, 0));
-    floor->Scale(glm::vec3(80.5, 80.5, 80.5));
+    floor->Scale(glm::vec3(80, 80, 80));
+    floor->SetPlayer(player);
 
     game::SceneNode* floor2 = CreateInstance<SceneNode>("floor2", "wall", "TextureMaterial", "Rock");
     floor2->Rotate(rotation);
+    floor2->SetAngle(0.0);
     floor2->SetPosition(glm::vec3(170, -2, 90));
     floor2->Scale(glm::vec3(80, 80, 80));
+    floor2->SetPlayer(player);
 
     game::SceneNode* floor3 = CreateInstance<SceneNode>("floor3", "wall", "TextureMaterial", "Rock");
     floor3->Rotate(glm::angleAxis(-glm::pi<float>() / 2 - glm::pi<float>() / 18, glm::vec3(1.0, 0.0, 0.0)));
+    floor3->SetAngle(glm::pi<float>() / 18);
     floor3->SetPosition(glm::vec3(170, -18, -68));
     floor3->Scale(glm::vec3(80, 80, 80));
+    floor3->SetPlayer(player);
 
-    game::SceneNode* floor4 = CreateInstance<SceneNode>("floor4", "wall", "TextureMaterial", "Rock");
+    game::SceneNode* floor4 = CreateInstance<SceneNode>("step", "wall", "TextureMaterial", "Rock");
     floor4->SetPosition(glm::vec3(130, -12, 10));
     floor4->Scale(glm::vec3(10, 10, 10));
 
@@ -279,7 +285,7 @@ void Game::MainLoop(void){
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
-        camera_.SetPosition(glm::vec3(player->GetPosition().x, camera_.GetPosition().y, player->GetPosition().z));
+        camera_.SetPosition(glm::vec3(player->GetPosition().x, player->GetPosition().y + 15, player->GetPosition().z));
         // Animate the scene
         if (animating_){
             static double last_time = 0;
@@ -288,8 +294,20 @@ void Game::MainLoop(void){
                 if (game_start) {
                     scene_.GetNode("cover")->SetPosition(scene_.GetNode("cover")->GetPosition() + glm::vec3(0, -0.2, 0));
                 }
+                SceneNode* reference_floor;
+                if (block_locate == "BlockA") {
+                    reference_floor = scene_.GetNode("floor");
 
-                player->SetPosition(glm::vec3(player->GetPosition().x, -10, player->GetPosition().z));
+                }else if(block_locate == "BlockB") {
+                    reference_floor = scene_.GetNode("floor2");
+
+                }
+                else if (block_locate == "BlockC") {
+                    reference_floor = scene_.GetNode("floor3");
+
+                }
+                float y = reference_floor->GetHight() - 10;
+                player->SetPosition(glm::vec3(player->GetPosition().x, y, player->GetPosition().z));
                 
                 
                 //scene_.Update();

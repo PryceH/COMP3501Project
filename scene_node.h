@@ -35,6 +35,7 @@ namespace game {
         glm::vec3 GetScale(void) const;
         float GetRadius(void) const;
         float GetAngle(void) const;
+        float GetHight(void) const;
         bool GetBlending(void) const;
         SceneNode* GetPlayer(void) const;
         std::string GetInteraction(void) const;

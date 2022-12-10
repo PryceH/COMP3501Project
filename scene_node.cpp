@@ -103,6 +103,15 @@ namespace game {
         return interaction_;
     }
 
+    float SceneNode::GetHight(void) const {
+        glm::vec3 player_pos = GetPlayer()->GetPosition();
+        glm::vec3 reference_point = glm::vec3(player_pos.x, GetPosition().y, GetPosition().z);
+        float h = 160 * sin(GetAngle());
+        float y = player_pos.z - GetPosition().z;
+        float x = y * tan(GetAngle());
+        return -h / 2 + x;
+    }
+
     void SceneNode::SetPlayer(SceneNode* player) {
 
         player_ = player;
@@ -265,6 +274,9 @@ namespace game {
                     GetPlayer()->SetInteraction(GetName());
                 }
             }
+        }
+        else if (GetName().find("floor1") == 0) {
+
         }
         // Do nothing for this generic type of scene node
     }
