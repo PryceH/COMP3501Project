@@ -37,7 +37,7 @@ namespace game {
         float GetAngle(void) const;
         float GetHight(void) const;
         bool GetBlending(void) const;
-        SceneNode* GetPlayer(void) const;
+        virtual SceneNode* GetPlayer(void) const;
         std::string GetInteraction(void) const;
 
         void SetTrans(glm::mat4 o);
@@ -52,7 +52,7 @@ namespace game {
         void SetRadius(float radius);
         void SetAngle(float angle);
         void SetTexture(Resource* texture);
-        void SetPlayer(SceneNode* player);
+        virtual void SetPlayer(SceneNode* player);
         void SetInteraction(std::string interaction);
 
 

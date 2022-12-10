@@ -218,7 +218,6 @@ void Game::SetupResources(void){
 
 
 void Game::SetupScene(void) {
-    CreateTreeField(5);
 
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
@@ -941,18 +940,23 @@ void Game::CreateTreeField(int num_branches) {
 
 
     // Create root og tree
-    Tree* root = CreateTreeInstance("root1", "tree", "Light", "Wood");
-    root->SetPosition(glm::vec3(-25, 0, -25));
-    Branches_grow(root, 0, 3);
-    root->SetWind(glm::vec3(1, 0, 1));
-    root = CreateTreeInstance("root2", "tree", "Light", "Wood");
-    root->SetPosition(glm::vec3(25, 0, 25));
-    Branches_grow(root, 0, 3);
-    root->SetWind(glm::vec3(1, 0, 1));
-    root = CreateTreeInstance("root3", "tree", "Light", "Wood");
-    root->SetPosition(glm::vec3(-25, 0, 25));
-    Branches_grow(root, 0, 3);
-    root->SetWind(glm::vec3(1, 0, 1));
+    Tree* root1 = CreateTreeInstance("root1", "tree", "Light", "Wood");
+    root1->SetPosition(glm::vec3(-25, 0, -25));
+    Branches_grow(root1, 0, 3);
+    root1->SetWind(glm::vec3(1, 0, 1));
+    root1->SetPlayer(player);
+
+    Tree* root2 = CreateTreeInstance("root2", "tree", "Light", "Wood");
+    root2->SetPosition(glm::vec3(25, 0, 25));
+    Branches_grow(root2, 0, 3);
+    root2->SetWind(glm::vec3(1, 0, 1));
+    root2->SetPlayer(player);
+
+    Tree* root3 = CreateTreeInstance("root3", "tree", "Light", "Wood");
+    root3->SetPosition(glm::vec3(-25, 0, 25));
+    Branches_grow(root3, 0, 3);
+    root3->SetWind(glm::vec3(1, 0, 1));
+    root3->SetPlayer(player);
     // create branches
     
     //set the vator of wind
