@@ -21,7 +21,7 @@ float camera_near_clip_distance_g = 0.01;
 float camera_far_clip_distance_g = 1000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
-glm::vec3 camera_position_g(0.5, 5, 10.0);
+glm::vec3 camera_position_g(0.5, 1, 10.0);
 glm::vec3 camera_look_at_g(0.0, 5.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
@@ -32,6 +32,7 @@ const std::string material_directory_g = MATERIAL_DIRECTORY;
 SceneNode* player;
 bool player_jump = false;
 bool game_start = false;
+bool door_open = false;
 float player_jump_accerlation = 5.0;
 std::string block_locate = "BlockA";
 
@@ -288,7 +289,7 @@ void Game::MainLoop(void){
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
-        camera_.SetPosition(glm::vec3(player->GetPosition().x, player->GetPosition().y + 15, player->GetPosition().z));
+        camera_.SetPosition(glm::vec3(player->GetPosition().x, player->GetPosition().y + 11, player->GetPosition().z));
         // Animate the scene
         if (animating_){
             static double last_time = 0;
@@ -296,6 +297,12 @@ void Game::MainLoop(void){
             if ((current_time - last_time) > 0.01){
                 if (game_start) {
                     scene_.GetNode("cover")->SetPosition(scene_.GetNode("cover")->GetPosition() + glm::vec3(0, -0.2, 0));
+                }
+                if (door_open) {
+                    SceneNode* door = scene_.GetNode("Door");
+                    if (door->GetPosition().y > -20) {
+                        door->Translate(glm::vec3(0, -2, 0));
+                    }
                 }
                 SceneNode* reference_floor;
                 if (block_locate == "BlockA") {
@@ -428,15 +435,13 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             glm::vec3 move = glm::vec3(game->camera_.GetForward().x, 0, game->camera_.GetForward().z) * trans_factor;
             if (block_locate == "BlockA") {
                 if (pos.x > -30 && pos.x + move.x < 30 && pos.z + move.z > -30 && pos.z + move.z < 30) {
-                    std::cout << "(" << pos.x + move.x << ", " << pos.z + move.z << ")\n";
                     player->Translate(move);
                 }
             }else if (block_locate == "BlockB") {
                 if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
-                    std::cout << "(" << pos.x + move.x << ", " << pos.z + move.z << ")\n";
                     player->Translate(move);
                 }
-                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10) {
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10 && door_open) {
                     player->Translate(move);
                     block_locate = "BlockC";
                 }
@@ -462,7 +467,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                 if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
                     player->Translate(move);
                 }
-                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10) {
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10 && door_open) {
                     player->Translate(move);
                     block_locate = "BlockC";
                 }
@@ -490,7 +495,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                 if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
                     player->Translate(move);
                 }
-                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10) {
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10 && door_open) {
                     player->Translate(move);
                     block_locate = "BlockC";
                 }
@@ -518,7 +523,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                 if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
                     player->Translate(move);
                 }
-                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10) {
+                else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10 && door_open) {
                     player->Translate(move);
                     block_locate = "BlockC";
                 }
@@ -539,17 +544,16 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         }
         
         if (key == GLFW_KEY_C && action == GLFW_PRESS) {
-            if (block_locate == "BlockA") {
-                //game->camera_.SetPosition(glm::vec3(115, 50, 80));
-                //player->SetPosition(glm::vec3(115, 0, 80));
-                //block_locate = "BlockB";
+            std::string interaction = player->GetInteraction();
+
+            if (interaction == "magicA") {
                 game->ChangetoCastle();
             }
-            else if (block_locate == "BlockB") {
-                //game->camera_.SetPosition(glm::vec3(0.5, 50, 10));
-                //player->SetPosition(glm::vec3(0, 0, 0));
-                //block_locate = "BlockA";
+            else if (interaction == "magicB") {
                 game->ChangetoVillage();
+            }
+            else if (interaction == "Door") {
+                door_open = true;
             }
 
         }
@@ -953,8 +957,7 @@ void Game::CreateBlockB() {
         wall->SetPosition(glm::vec3(wall_coordinate[index][0], 0, wall_coordinate[index][1]));
         wall->Scale(glm::vec3(10, 10, 10));
         if (wall->GetName() == "Door") {
-
-            wall->SetPosition(glm::vec3(wall_coordinate[index][0], -20, wall_coordinate[index][1]));
+            wall->SetPosition(glm::vec3(wall_coordinate[index][0], 0, wall_coordinate[index][1]));
             wall->SetPlayer(player);
         }
         index++;
