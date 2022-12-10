@@ -33,6 +33,7 @@ SceneNode* player;
 bool player_jump = false;
 bool game_start = false;
 bool door_open = false;
+int code = 0;
 float player_jump_accerlation = 5.0;
 std::string block_locate = "BlockA";
 
@@ -559,6 +560,10 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             else if (interaction == "Door") {
                 door_open = true;
             }
+            else if (interaction == "root1" || interaction == "root2" || interaction == "root3") {
+                game->CheckCode(interaction);
+              
+            }
 
         }
     }
@@ -568,7 +573,10 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         }
     }
     
-    
+}
+void Game::CheckCode(std::string name) {
+
+
 }
 void Game::ChangetoCastle() {
     block_locate = "BlockB";
@@ -875,15 +883,15 @@ void Game::CreateTreeField(int num_branches) {
 
 
     // Create root og tree
-    Tree* root = CreateTreeInstance("root", "tree", "Light", "Wood");
+    Tree* root = CreateTreeInstance("root1", "tree", "Light", "Wood");
     root->SetPosition(glm::vec3(-25, 0, -25));
     Branches_grow(root, 0, 3);
     root->SetWind(glm::vec3(1, 0, 1));
-    root = CreateTreeInstance("root", "tree", "Light", "Wood");
+    root = CreateTreeInstance("root2", "tree", "Light", "Wood");
     root->SetPosition(glm::vec3(25, 0, 25));
     Branches_grow(root, 0, 3);
     root->SetWind(glm::vec3(1, 0, 1));
-    root = CreateTreeInstance("root", "tree", "Light", "Wood");
+    root = CreateTreeInstance("root3", "tree", "Light", "Wood");
     root->SetPosition(glm::vec3(-25, 0, 25));
     Branches_grow(root, 0, 3);
     root->SetWind(glm::vec3(1, 0, 1));
