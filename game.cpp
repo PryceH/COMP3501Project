@@ -251,7 +251,7 @@ void Game::SetupScene(void) {
     CreateTreeField(5);
     CreateBlockA();
     CreateBlockB();
-    Createbonfire("bonfireB", 130, 0, 60);
+    Createbonfire("bonfire", 130, 0, 60);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -276,6 +276,9 @@ void Game::SetupScene(void) {
 
 
 void Game::MainLoop(void){
+    ChangetoCastle();
+    scene_.GetNode("cover")->SetPosition(glm::vec3(player->GetPosition().x, camera_.GetPosition().y, player->GetPosition().z) + glm::vec3(-0.2, 0, -4));
+    
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
@@ -520,14 +523,14 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         if (key == GLFW_KEY_C && action == GLFW_PRESS) {
             if (block_locate == "BlockA") {
                 //game->camera_.SetPosition(glm::vec3(115, 50, 80));
-                player->SetPosition(glm::vec3(115, 0, 80));
-                block_locate = "BlockB";
+                //player->SetPosition(glm::vec3(115, 0, 80));
+                //block_locate = "BlockB";
                 game->ChangetoCastle();
             }
             else if (block_locate == "BlockB") {
                 //game->camera_.SetPosition(glm::vec3(0.5, 50, 10));
-                player->SetPosition(glm::vec3(0, 0, 0));
-                block_locate = "BlockA";
+                //player->SetPosition(glm::vec3(0, 0, 0));
+                //block_locate = "BlockA";
                 game->ChangetoVillage();
             }
 
@@ -542,6 +545,9 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     
 }
 void Game::ChangetoCastle() {
+    block_locate = "BlockB";
+    player->SetPosition(glm::vec3(115, 0, 80));
+    light_.SetPosition(scene_.GetNode("Fire")->GetPosition());
     scene_.GetNode("front")->SetTexture(resman_.GetResource("BackTexture2"));
     scene_.GetNode("back")->SetTexture(resman_.GetResource("FrontTexture2"));
     scene_.GetNode("left")->SetTexture(resman_.GetResource("LeftTexture2"));
@@ -550,6 +556,9 @@ void Game::ChangetoCastle() {
     scene_.GetNode("bottom")->SetTexture(resman_.GetResource("BottomTexture2"));
 }
 void Game::ChangetoVillage() {
+    block_locate = "BlockA";
+    player->SetPosition(glm::vec3(0, 0, 0));
+    light_.SetPosition(glm::vec3(0, 10, 0));
     scene_.GetNode("front")->SetTexture(resman_.GetResource("FrontTexture"));
     scene_.GetNode("back")->SetTexture(resman_.GetResource("BackTexture"));
     scene_.GetNode("left")->SetTexture(resman_.GetResource("LeftTexture"));
@@ -748,7 +757,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     c6->SetPosition(glm::vec3(x, y, z+0.4));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 0.0));
     c6->Rotate(rotation);
-    game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
+    game::SceneNode* particles = CreateInstance<SceneNode>("Fire", "FireParticles", "FireMaterial", "Flame");
     particles->SetPosition(glm::vec3(x, y, z));
     //particles->SetBlending(true);
 
