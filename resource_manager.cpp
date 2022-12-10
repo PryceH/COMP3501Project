@@ -818,8 +818,8 @@ void ResourceManager::CreateSphereParticles(std::string object_name, int num_par
         throw e;
     }
 
-    float trad = 0.2; // Defines the starting point of the particles along the normal
-    float maxspray = 0.5; // This is how much we allow the points to deviate from the sphere
+    float trad = 1.2; // Defines the starting point of the particles along the normal
+    float maxspray = 0.8; // This is how much we allow the points to deviate from the sphere
     float u, v, w, theta, phi, spray; // Work variables
 
     for (int i = 0; i < num_particles; i++) {

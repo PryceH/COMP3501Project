@@ -200,7 +200,7 @@ void Game::SetupResources(void){
 
     // Create a torus
     resman_.CreateTorus("TorusMesh");
-    resman_.CreateCylinder("SimpleCylinder", 1.0, 0.1, 10, 10);
+    resman_.CreateCylinder("SimpleCylinder", 4.0, 0.4, 10, 10);
     resman_.CreateCylinder("tree", 15.0, 1.0, 50, 50);
     //resman_.CreateFireParticles("FireParticles");
     resman_.CreateWall("wall");
@@ -257,7 +257,7 @@ void Game::SetupScene(void) {
     CreateTreeField(5);
     CreateBlockA();
     CreateBlockB();
-    Createbonfire("bonfireB", -22, -1.5, 22);
+    Createbonfire("bonfire", 130, 0, 60);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -282,6 +282,9 @@ void Game::SetupScene(void) {
 
 
 void Game::MainLoop(void){
+    ChangetoCastle();
+    scene_.GetNode("cover")->SetPosition(glm::vec3(player->GetPosition().x, camera_.GetPosition().y, player->GetPosition().z) + glm::vec3(-0.2, 0, -4));
+    
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
@@ -430,6 +433,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                 }
             }else if (block_locate == "BlockB") {
                 if (pos.x + move.x > 100 && pos.x + move.x < 160 && pos.z + move.z > 10 && pos.z + move.z < 110) {
+                    std::cout << "(" << pos.x + move.x << ", " << pos.z + move.z << ")\n";
                     player->Translate(move);
                 }
                 else if (pos.x + move.x > 120 && pos.x + move.x < 140 && pos.z + move.z <= 10) {
@@ -537,14 +541,14 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         if (key == GLFW_KEY_C && action == GLFW_PRESS) {
             if (block_locate == "BlockA") {
                 //game->camera_.SetPosition(glm::vec3(115, 50, 80));
-                player->SetPosition(glm::vec3(115, 0, 80));
-                block_locate = "BlockB";
+                //player->SetPosition(glm::vec3(115, 0, 80));
+                //block_locate = "BlockB";
                 game->ChangetoCastle();
             }
             else if (block_locate == "BlockB") {
                 //game->camera_.SetPosition(glm::vec3(0.5, 50, 10));
-                player->SetPosition(glm::vec3(0, 0, 0));
-                block_locate = "BlockA";
+                //player->SetPosition(glm::vec3(0, 0, 0));
+                //block_locate = "BlockA";
                 game->ChangetoVillage();
             }
 
@@ -559,6 +563,9 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     
 }
 void Game::ChangetoCastle() {
+    block_locate = "BlockB";
+    player->SetPosition(glm::vec3(115, 0, 80));
+    light_.SetPosition(scene_.GetNode("Fire")->GetPosition());
     scene_.GetNode("front")->SetTexture(resman_.GetResource("BackTexture2"));
     scene_.GetNode("back")->SetTexture(resman_.GetResource("FrontTexture2"));
     scene_.GetNode("left")->SetTexture(resman_.GetResource("LeftTexture2"));
@@ -567,6 +574,9 @@ void Game::ChangetoCastle() {
     scene_.GetNode("bottom")->SetTexture(resman_.GetResource("BottomTexture2"));
 }
 void Game::ChangetoVillage() {
+    block_locate = "BlockA";
+    player->SetPosition(glm::vec3(0, 0, 0));
+    light_.SetPosition(glm::vec3(0, 10, 0));
     scene_.GetNode("front")->SetTexture(resman_.GetResource("FrontTexture"));
     scene_.GetNode("back")->SetTexture(resman_.GetResource("BackTexture"));
     scene_.GetNode("left")->SetTexture(resman_.GetResource("LeftTexture"));
@@ -716,8 +726,8 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 1;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c1 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
-    c1->SetPosition(glm::vec3(x+0.1,y,z));
+    game::SceneNode* c1 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    c1->SetPosition(glm::vec3(x+0.4,y,z));
     glm::quat rotation = glm::angleAxis(glm::pi<float>()/4, glm::vec3(0.0, 0.0, 1.0));
     c1->Rotate(rotation);
 
@@ -725,8 +735,8 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 2;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c2 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
-    c2->SetPosition(glm::vec3(x-0.1, y, z));
+    game::SceneNode* c2 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    c2->SetPosition(glm::vec3(x-0.4, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(0.0, 0.0, 1.0));
     c2->Rotate(rotation);
 
@@ -734,8 +744,8 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 3;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c3 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
-    c3->SetPosition(glm::vec3(x - 0.1, y, z));
+    game::SceneNode* c3 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    c3->SetPosition(glm::vec3(x - 0.4, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 1.0));
     c3->Rotate(rotation);
 
@@ -743,7 +753,7 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 4;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c4 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
+    game::SceneNode* c4 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
     c4->SetPosition(glm::vec3(x, y, z));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, -1.0));
     c4->Rotate(rotation);
@@ -752,8 +762,8 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 5;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c5 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
-    c5->SetPosition(glm::vec3(x, y, z - 0.1));
+    game::SceneNode* c5 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    c5->SetPosition(glm::vec3(x, y, z - 0.4));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(-1.0, 0.0, 0.0));
     c5->Rotate(rotation);
 
@@ -761,11 +771,11 @@ void Game::Createbonfire(std::string name, float x, float y, float z) {
     ss << 6;
     index = ss.str();
     final_name = name + index;
-    game::SceneNode* c6 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "Light", "Wood");
-    c6->SetPosition(glm::vec3(x, y, z+0.1));
+    game::SceneNode* c6 = CreateInstance<SceneNode>(final_name, "SimpleCylinder", "TextureMaterial", "Wood");
+    c6->SetPosition(glm::vec3(x, y, z+0.4));
     rotation = glm::angleAxis(glm::pi<float>() / -4, glm::vec3(1.0, 0.0, 0.0));
     c6->Rotate(rotation);
-    game::SceneNode* particles = CreateInstance<SceneNode>("ParticleInstance1", "FireParticles", "FireMaterial", "Flame");
+    game::SceneNode* particles = CreateInstance<SceneNode>("Fire", "FireParticles", "FireMaterial", "Flame");
     particles->SetPosition(glm::vec3(x, y, z));
     //particles->SetBlending(true);
 
@@ -858,18 +868,22 @@ void Game::CreateTreeField(int num_branches) {
 
     // Create root og tree
     Tree* root = CreateTreeInstance("root", "tree", "Light", "Wood");
-    root->SetPosition(glm::vec3(0, 0, 0));
+    root->SetPosition(glm::vec3(-25, 0, -25));
     Branches_grow(root, 0, 3);
+    root->SetWind(glm::vec3(1, 0, 1));
     root = CreateTreeInstance("root", "tree", "Light", "Wood");
-    root->SetPosition(glm::vec3(6, 0, 6));
+    root->SetPosition(glm::vec3(25, 0, 25));
     Branches_grow(root, 0, 3);
+    root->SetWind(glm::vec3(1, 0, 1));
     root = CreateTreeInstance("root", "tree", "Light", "Wood");
-    root->SetPosition(glm::vec3(6, 0, -6));
+    root->SetPosition(glm::vec3(-25, 0, 25));
     Branches_grow(root, 0, 3);
+    root->SetWind(glm::vec3(1, 0, 1));
     // create branches
     
     //set the vator of wind
-    root->SetWind(glm::vec3(1, 0, 1));
+    
+
 
 }
 

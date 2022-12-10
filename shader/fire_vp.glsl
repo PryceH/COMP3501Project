@@ -35,7 +35,7 @@ void main()
     float phase = two_pi*particle_id; // Start the sin wave later depending on the particle_id
     float param = timer / 10.0 + phase; // The constant that divides "timer" also helps to adjust the "speed" of the fire
     float rem = mod(param, pi_over_two); // Use the remainder of dividing by pi/2 so that we are always in the range [0..pi/2] where sin() gives values in [0..1]
-    float circtime = sin(rem); // Get time value in [0..1], according to a sinusoidal wave
+    float circtime = sin(rem)*2; // Get time value in [0..1], according to a sinusoidal wave
                                     
     // Set up parameters of the particle motion
     float t = abs(circtime)*(0.3 + abs(normal.y)); // Our time parameter
@@ -48,6 +48,6 @@ void main()
     gl_Position = view_mat * world_mat * vec4(position, 1.0);
     
     // Define amount of blending depending on the cyclic time
-    //float alpha = 1.0 - circtime*circtime;
+    float alpha = 1.0 - circtime*circtime;
     particle_color = vec4(1.0, 1.0, 1.0, 1);
 }
