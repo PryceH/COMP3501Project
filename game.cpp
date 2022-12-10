@@ -193,6 +193,8 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Cwall", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/gwall.png");
     resman_.LoadResource(Texture, "Gwall", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/box.jpg");
+    resman_.LoadResource(Texture, "Box", filename.c_str());
 
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
     resman_.LoadResource(Texture, "Cover", filename.c_str());
@@ -213,6 +215,7 @@ void Game::SetupResources(void){
     resman_.CreateSphereParticles("FireParticles");
     resman_.CreateMagicParticles("MagicParticles");
     resman_.CreateCylinder("self", 1, 1, 10, 45);
+    
 }
 
 
@@ -263,6 +266,7 @@ void Game::SetupScene(void) {
     CreateBlockA();
     CreateBlockB();
     Createbonfire("bonfire", 130, 0, 60);
+    CreateBox(120, -2, -30);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -296,6 +300,7 @@ void Game::MainLoop(void){
         camera_.SetPosition(glm::vec3(player->GetPosition().x, player->GetPosition().y + 11, player->GetPosition().z));
         // Animate the scene
         if (animating_){
+            
             static double last_time = 0;
             double current_time = glfwGetTime();
             if ((current_time - last_time) > 0.01){
@@ -599,6 +604,10 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             }
 
         }
+        if (key == GLFW_KEY_P) {
+            game->Open();
+        }
+        
     }
     else {
         if (key == GLFW_KEY_K) {
@@ -728,6 +737,51 @@ void Game::ResizeCallback(GLFWwindow* window, int width, int height){
 Game::~Game(){
     
     glfwTerminate();
+}
+void Game::CreateBox(float x, float y, float z) {
+    game::SceneNode* front = CreateInstance<SceneNode>("box", "wall", "Light", "Box");
+    front->SetPosition(glm::vec3(x, y, z-0.5));
+    front->SetScale(glm::vec3(0.5,0.5,0.5));
+
+    game::SceneNode* left = CreateInstance<SceneNode>("box", "wall", "Light", "Box");
+    glm::quat rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(0.0, 1.0, 0.0));
+    left->Rotate(rotation);
+    left->SetPosition(glm::vec3(x + 0.5, y, z));
+    left->SetScale(glm::vec3(0.5, 0.5, 0.5));
+
+    game::SceneNode* right = CreateInstance<SceneNode>("box", "wall", "Light", "Box");
+    rotation = glm::angleAxis(glm::pi<float>() / -2, glm::vec3(0.0, 1.0, 0.0));
+    right->Rotate(rotation);
+    right->SetPosition(glm::vec3(x - 0.5, y, z));
+    right->SetScale(glm::vec3(0.5, 0.5, 0.5));
+
+    game::SceneNode* back = CreateInstance<SceneNode>("box", "wall", "Light", "Box");
+    back->SetPosition(glm::vec3(x, y, z + 0.5));
+    back->SetScale(glm::vec3(0.5, 0.5, 0.5));
+
+    game::SceneNode* top = CreateInstance<SceneNode>("boxtop", "wall", "Light", "Box");
+    rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(1.0, 0.0, 0.0));
+    top->Rotate(rotation);
+    top->SetPosition(glm::vec3(x, y + 0.5, z));
+    top->SetScale(glm::vec3(0.5, 0.5, 0.5));
+
+
+    game::SceneNode* bottom = CreateInstance<SceneNode>("boxbottom", "wall", "Light", "Box");
+    rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(1.0, 0.0, 0.0));
+    bottom->Rotate(rotation);
+    bottom->SetPosition(glm::vec3(x, y-0.5, z));
+    bottom->SetScale(glm::vec3(0.5, 0.5, 0.5));
+}
+void Game::Open() {
+    game::SceneNode* top = scene_.GetNode("boxtop");
+    if (abs(top->GetPosition().x - scene_.GetNode("boxbottom")->GetPosition().x) > 0.125) {
+    }
+    else {
+        top->Rotate(glm::angleAxis((glm::pi<float>() / 360), glm::vec3(0, 1, 0)));//rotate the tree by vator wind
+        top->Translate(glm::vec3(-0.125 / 45, 0, 0));
+        top->Translate(glm::vec3(0, 0.125 / 45, 0));
+    }
+    
 }
 Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name){
 

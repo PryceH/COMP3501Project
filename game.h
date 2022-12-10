@@ -82,10 +82,12 @@ namespace game {
             //sky box
             Sky* CreateSkyBoxInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));
             void CreateSkyBox();
+            void CreateBox(float x, float y, float z);
             void Createbonfire(std::string name, float x, float y, float z);
             void ChangetoCastle();
             void ChangetoVillage();
             void CheckCode(Game* game, std::string name);
+            void Open();
 
             // Create an instance of an object stored in the resource manager
             template <class Instance> 
