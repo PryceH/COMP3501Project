@@ -186,6 +186,10 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "Land", filename.c_str());
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/door.jpg");
     resman_.LoadResource(Texture, "Door", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/cwall.png");
+    resman_.LoadResource(Texture, "Cwall", filename.c_str());
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/wood/gwall.png");
+    resman_.LoadResource(Texture, "Gwall", filename.c_str());
 
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
     resman_.LoadResource(Texture, "Cover", filename.c_str());
@@ -897,7 +901,7 @@ void Game::CreateBlockA() {
         ss << i;
         std::string index = ss.str();
         std::string name = "Wall" + index;
-        wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Wood"));
+        wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Gwall"));
     }
     int index = 0;
     for (SceneNode* wall : wall_arr) {
@@ -935,7 +939,7 @@ void Game::CreateBlockB() {
             wall_arr.push_back(CreateInstance<SceneNode>("Door", "wall", "TextureMaterial", "Door"));
         }
         else {
-            wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Stone"));
+            wall_arr.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Cwall"));
         }
     }
     for (int i = 0; i < 5; i++) {
@@ -943,7 +947,7 @@ void Game::CreateBlockB() {
         ss << i + 12 + 25;
         std::string index = ss.str();
         std::string name = "Wall" + index;
-        wall_arr_complement.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Stone"));
+        wall_arr_complement.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Cwall"));
     }
 
     int index = 0;

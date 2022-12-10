@@ -14,7 +14,7 @@ set(SRCS
     shader/material_fp.glsl shader/material_vp.glsl shader/metal_fp.glsl shader/metal_vp.glsl shader/plastic_fp.glsl shader/plastic_vp.glsl
     shader/textured_material_fp.glsl shader/textured_material_vp.glsl shader/three-term_shiny_blue_fp.glsl shader/three-term_shiny_blue_vp.glsl 
     shader/normal_map_vp.glsl shader/normal_map_fp.glsl shader/screen_space_vp.glsl shader/screen_space_fp.glsl shader/fire_fp.glsl shader/fire_vp.glsl shader/fire_gp.glsl
-    shader/magic_fp.glsl shader/magic_vp.glsl shader/magic_gp.glsl
+    shader/magic_fp.glsl shader/magic_vp.glsl shader/magic_gp.glsl shader/lit_fp.glsl shader/lit_vp.glsl
 )
 
 # Add path name to configuration file
@@ -29,7 +29,7 @@ include_directories(${OPENGL_INCLUDE_DIR})
 target_link_libraries(${PROJ_NAME} ${OPENGL_gl_LIBRARY})
 
 # Other libraries needed
-set(LIBRARY_PATH D:\SchoolProject\COMP\3501\Libraries)
+set(LIBRARY_PATH D:\2022fall\comp3501\Libraries)
 include_directories(${LIBRARY_PATH}/include)
 if(NOT WIN32)
     find_library(GLEW_LIBRARY GLEW)
