@@ -267,7 +267,7 @@ void Game::SetupScene(void) {
     CreateBlockA();
     CreateBlockB();
     Createbonfire("bonfire", 130, 0, 60);
-    CreateBox(0, -2, 0);
+    CreateBox(120, -2, -30);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
