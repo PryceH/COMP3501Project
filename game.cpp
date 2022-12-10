@@ -94,8 +94,8 @@ void Game::InitWindow(void){
 void Game::InitView(void){
 
     // Set up z-buffer
-    //glEnable(GL_DEPTH_TEST);
-    //glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     // Set viewport
     int width, height;
@@ -201,7 +201,6 @@ void Game::SetupResources(void){
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
     resman_.LoadResource(Texture, "Cover", filename.c_str());
 
-    // Create particles for explosion
     
 
 
@@ -212,7 +211,6 @@ void Game::SetupResources(void){
     resman_.CreateTorus("TorusMesh");
     resman_.CreateCylinder("SimpleCylinder", 4.0, 0.4, 10, 10);
     resman_.CreateCylinder("tree", 15.0, 1.0, 50, 50);
-    //resman_.CreateFireParticles("FireParticles");
     resman_.CreateWall("wall");
     resman_.CreateSphereParticles("FireParticles");
     resman_.CreateMagicParticles("MagicParticles");
@@ -227,11 +225,10 @@ void Game::SetupScene(void) {
     scene_.SetBackgroundColor(viewport_background_color_g);
 
     // Create an instance of the torus mesh
-    //game::SceneNode* torus = CreateInstance<SceneNode>("TorusInstance1", "TorusMesh", "ShinyBlueMaterial");
+
 
 
     player = CreateInstance<SceneNode>("Player", "self", "Self");
-    //player->SetBlending(true);
     player->SetRadius(1.0);
     player->SetAngle(glm::pi<float>() / 2);
     player->SetPosition(glm::vec3(0, -10, 25));
@@ -269,10 +266,7 @@ void Game::SetupScene(void) {
     CreateBlockB();
     Createbonfire("bonfire", 130, 0, 60);
 
-    // Scale the instance
-    //particles->SetPosition(glm::vec3(2, 0, 0));
-    //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
-    //particles->SetBlending(true);
+
     //cover
     game::SceneNode* cover = CreateInstance<SceneNode>("cover", "wall", "TextureMaterial", "Cover");
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
@@ -280,8 +274,7 @@ void Game::SetupScene(void) {
 
 
 
-    //game::SceneNode* flame = CreateInstance<SceneNode>("fire", "FireParticles", "FireMaterial", "Flame");
-    //flame->SetPosition(glm::vec3(0,1,-1));
+
     game::SceneNode* magicA = CreateInstance<SceneNode>("magicA", "MagicParticles", "ParticleMagic", "Magic");
     magicA->SetPosition(glm::vec3(22, -0.5, -22));
     magicA->SetPlayer(player);
@@ -372,15 +365,7 @@ void Game::MainLoop(void){
                         effect2 = false;
                     }
                 }
-                //scene_.Update();
 
-                // Animate the torus
-                //SceneNode *node = scene_.GetNode("TorusInstance1");
-                //glm::quat rotation = glm::angleAxis(glm::pi<float>() / 180, glm::vec3(0.0, 1.0, 0.0));
-                //node->Rotate(rotation);
-
-                //node = scene_.GetNode("ParticleInstance1");
-                //rotation = glm::angleAxis(glm::pi<float>() / (180*5), glm::vec3(0.0, 1.0, 0.0));
 
                 last_time = current_time;
             }
@@ -412,16 +397,7 @@ void Game::MainLoop(void){
         }
 
 
-        // Save the texture to a file for debug
-        /*static int first = 1;
-        if (first){
-            scene_.SaveTexture("texture.ppm");
-            first = 0;
-        }*/
 
-        // Process the texture with a screen-space effect and display
-        // the texture
-        //scene_.DisplayTexture(resman_.GetResource("ScreenSpaceMaterial")->GetResource());
 
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
@@ -576,8 +552,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                     block_locate = "BlockB";
                 }
             }
-            //game->camera_.Translate(glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor);
-        }
+             }
         if (key == GLFW_KEY_SPACE) {
             game->camera_.Translate(glm::vec3(0, 2.0, 0)* trans_factor);
         }
@@ -586,7 +561,6 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             std::string interaction = player->GetInteraction();
 
 
-            std::cout << "Interact with " << interaction << "\n";
             if (interaction == "magicA") {
                 game->ChangetoCastle();
             }
@@ -639,7 +613,7 @@ void Game::CheckCode(Game* game, std::string name) {
                 br->SetTexture(game->resman_.GetResource("Stone"));
             }
             
-            std::cout << "root1" << "\n";
+
         }else if (name == "root2" && code == 1) {
             code = 2;
             tree->SetTexture(game->resman_.GetResource("Stone"));
@@ -652,7 +626,7 @@ void Game::CheckCode(Game* game, std::string name) {
                 }
                 br->SetTexture(game->resman_.GetResource("Stone"));
             }
-            std::cout << "root2" << "\n";
+
         }else if (name == "root3" && code == 2) {
             code = 3;
             tree->SetTexture(game->resman_.GetResource("Stone"));
@@ -665,7 +639,7 @@ void Game::CheckCode(Game* game, std::string name) {
                 }
                 br->SetTexture(game->resman_.GetResource("Stone"));
             }
-            std::cout << "root3" << "\n";
+
             CreateBox(0, -2, 0);
             
         }

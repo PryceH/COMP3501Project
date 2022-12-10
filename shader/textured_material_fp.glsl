@@ -9,7 +9,7 @@ in vec3 light_pos;
 
 // Uniform (global) buffer
 uniform sampler2D texture_map;
-
+uniform vec3 view_position;
 
 void main() 
 {
@@ -21,6 +21,6 @@ void main()
 
 
 
-
+	
 
 }

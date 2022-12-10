@@ -225,8 +225,7 @@ namespace game {
             // Enable blending
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Simpler form
-            //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            //glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+
         }
         else {
             // Enable z-buffer
@@ -276,9 +275,6 @@ namespace game {
             }
         }
 
-        //if (GetName() == "Player") {
-        //    std::cout << "Interact with " << GetInteraction() << "\n";
-        //}
         // Do nothing for this generic type of scene node
     }
 
