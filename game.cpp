@@ -34,6 +34,7 @@ bool player_jump = false;
 bool game_start = false;
 bool door_open = false;
 int code = 0;
+bool key = false;
 float player_jump_accerlation = 5.0;
 std::string block_locate = "BlockA";
 
@@ -583,6 +584,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         if (key == GLFW_KEY_C && action == GLFW_PRESS) {
             std::string interaction = player->GetInteraction();
 
+
             if (interaction == "magicA") {
                 game->ChangetoCastle();
             }
@@ -593,6 +595,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                 door_open = true;
             }
             else if (interaction == "root1" || interaction == "root2" || interaction == "root3") {
+
                 game->CheckCode(interaction);
               
             }
@@ -608,6 +611,29 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
 }
 void Game::CheckCode(std::string name) {
 
+    if (code != 3) {
+        if (name == "root1" && code == 0) {
+            code = 1;
+
+        }
+        else {
+            code = 0;
+        }
+        if (name == "root2" && code == 1) {
+            code = 2;
+        }
+        else {
+            code = 0;
+        }
+        if (name == "root3" && code == 2) {
+            code = 3;
+            key = true;
+        }
+        else {
+            code = 0;
+        }
+    }
+    
 
 }
 void Game::ChangetoCastle() {
