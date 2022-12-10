@@ -22,7 +22,7 @@ float camera_far_clip_distance_g = 1000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
 glm::vec3 camera_position_g(0.5, 1, 10.0);
-glm::vec3 camera_look_at_g(0.0, 5.0, 0.0);
+glm::vec3 camera_look_at_g(0.0, camera_position_g.y, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
 // Materials 
@@ -133,10 +133,10 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "Light", filename.c_str());
 
     // Load material for screen-space effect
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
-    resman_.LoadResource(Material, "ScreenSpaceMaterial", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space_magic");
+    resman_.LoadResource(Material, "MagicEffect", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_effect");
-    resman_.LoadResource(Material, "ScreenEffectMaterial", filename.c_str());
+    resman_.LoadResource(Material, "FlameEffect", filename.c_str());
 
     // Load material to be applied to particles
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/magic");
@@ -303,12 +303,16 @@ void Game::MainLoop(void){
                 if (game_start) {
                     scene_.GetNode("cover")->SetPosition(scene_.GetNode("cover")->GetPosition() + glm::vec3(0, -0.2, 0));
                 }
+
+                // door animation
                 if (door_open) {
                     SceneNode* door = scene_.GetNode("Door");
                     if (door->GetPosition().y > -20) {
                         door->Translate(glm::vec3(0, -2, 0));
                     }
                 }
+
+                // terrain hieght algorithm
                 SceneNode* reference_floor;
                 if (block_locate == "BlockA") {
                     reference_floor = scene_.GetNode("floor");
@@ -324,7 +328,37 @@ void Game::MainLoop(void){
                 float y = reference_floor->GetHight() - 10;
                 player->SetPosition(glm::vec3(player->GetPosition().x, y, player->GetPosition().z));
                 
-                
+                // fire distance
+                SceneNode* fire = scene_.GetNode("Fire");
+                float distance = glm::distance(glm::vec2(fire->GetPosition().x, fire->GetPosition().z), glm::vec2(player->GetPosition().x, player->GetPosition().z));
+                if (distance < 10) {
+                    effect = true;
+                }
+                else {
+                    effect = false;
+                }
+
+                // magic distance
+                SceneNode* magic;
+                if (block_locate == "BlockA") {
+
+                    magic = scene_.GetNode("magicA");
+
+                }
+                else if (block_locate == "BlockB") {
+
+                    magic = scene_.GetNode("magicB");
+
+                }
+                if (block_locate != "BlockC") {
+                    distance = glm::distance(glm::vec2(magic->GetPosition().x, magic->GetPosition().z), glm::vec2(player->GetPosition().x, player->GetPosition().z));
+                    if (distance < 10) {
+                        effect2 = true;
+                    }
+                    else {
+                        effect2 = false;
+                    }
+                }
                 //scene_.Update();
 
                 // Animate the torus
@@ -351,19 +385,17 @@ void Game::MainLoop(void){
         box->SetPosition(camera_.GetPosition() + glm::vec3(0, 1, 0));
         box = scene_.GetNode("bottom");
         box->SetPosition(camera_.GetPosition() + glm::vec3(0, -1, 0));
-
         // Draw the scene
         scene_.Update();
         scene_.Draw(&camera_,&light_);
-
         // Draw the scene to a texture
         if (effect) {
             scene_.DrawToTexture(&camera_,&light_);
-            scene_.DisplayTexture(resman_.GetResource("ScreenEffectMaterial")->GetResource());
+            scene_.DisplayTexture(resman_.GetResource("FlameEffect")->GetResource());
         }
         if (effect2) {
             scene_.DrawToTexture(&camera_, &light_);
-            scene_.DisplayTexture(resman_.GetResource("ScreenSpaceMaterial")->GetResource());
+            scene_.DisplayTexture(resman_.GetResource("MagicEffect")->GetResource());
         }
 
 
@@ -403,12 +435,12 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     /*if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
         game->animating_ = (game->animating_ == true) ? false : true;
     }*/
-        if (key == GLFW_KEY_E && action == GLFW_PRESS) {
-            game->effect = (game->effect == true) ? false : true;
-        }
-        if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-            game->effect2 = (game->effect2 == true) ? false : true;
-        }
+        //if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+        //    game->effect = (game->effect == true) ? false : true;
+        //}
+        //if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+        //    game->effect2 = (game->effect2 == true) ? false : true;
+        //}
 
         // View control
         float rot_factor = 2 * (glm::pi<float>() / 180);
