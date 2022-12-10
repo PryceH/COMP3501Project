@@ -14,8 +14,8 @@ set(SRCS
     shader/material_fp.glsl shader/material_vp.glsl shader/metal_fp.glsl shader/metal_vp.glsl shader/plastic_fp.glsl shader/plastic_vp.glsl
     shader/textured_material_fp.glsl shader/textured_material_vp.glsl shader/three-term_shiny_blue_fp.glsl shader/three-term_shiny_blue_vp.glsl 
     shader/normal_map_vp.glsl shader/normal_map_fp.glsl shader/screen_space_vp.glsl shader/screen_space_fp.glsl shader/fire_fp.glsl shader/fire_vp.glsl shader/fire_gp.glsl
-    shader/magic_fp.glsl shader/magic_vp.glsl shader/magic_gp.glsl
-)
+    shader/magic_fp.glsl shader/magic_vp.glsl shader/magic_gp.glsl shader/screen_space_magic_fp.glsl shader/screen_space_magic_vp.glsl
+) 
 
 # Add path name to configuration file
 configure_file(path_config.h.in path_config.h)
