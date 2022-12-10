@@ -340,7 +340,6 @@ void Game::MainLoop(void){
                 }
                 float y = reference_floor->GetHight() - 10;
                 player->SetPosition(glm::vec3(player->GetPosition().x, y, player->GetPosition().z));
-                
                 // fire distance
                 SceneNode* fire = scene_.GetNode("Fire");
                 float distance = glm::distance(glm::vec2(fire->GetPosition().x, fire->GetPosition().z), glm::vec2(player->GetPosition().x, player->GetPosition().z));
@@ -593,6 +592,9 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             else if (interaction == "magicB") {
                 game->ChangetoVillage();
             }else if (interaction == "magicC") {
+                player->SetPosition(glm::vec3(115, -10, 80));
+                game->camera_.SetPosition(glm::vec3(player->GetPosition().x, player->GetPosition().y + 11, player->GetPosition().z));
+                game->camera_.SetView(glm::vec3(0.5, 1, 10.0), glm::vec3(0, 1, 0), glm::vec3(0, 1, 0));
                 win = true;
             }
             else if (interaction == "Door" && keys) {
