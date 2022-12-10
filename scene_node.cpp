@@ -261,7 +261,7 @@ namespace game {
         if (GetName().find("magic") == 0 || GetName().find("Door") == 0) {
             if (GetPlayer()->GetInteraction() == GetName()) {
                 float distance = glm::distance(GetPlayer()->GetPosition(), GetPosition());
-                if (distance < 10) {
+                if (distance < 20) {
                     GetPlayer()->SetInteraction(GetName());
                 }
                 else {
@@ -270,13 +270,10 @@ namespace game {
             }
             else if (GetPlayer()->GetInteraction() == "Nothing") {
                 float distance = glm::distance(GetPlayer()->GetPosition(), GetPosition());
-                if (distance < 10) {
+                if (distance < 20) {
                     GetPlayer()->SetInteraction(GetName());
                 }
             }
-        }
-        else if (GetName().find("floor1") == 0) {
-
         }
         // Do nothing for this generic type of scene node
     }
@@ -285,7 +282,7 @@ namespace game {
     void SceneNode::SetupShader(GLuint program) {
 
         // Set attributes for shaders
-        if (name_ == "magic") {
+        if (name_.find("magic")==0) {
             // Set attributes for shaders
             GLint vertex_att = glGetAttribLocation(program, "vertex");
             glVertexAttribPointer(vertex_att, 3, GL_FLOAT, GL_FALSE, 15 * sizeof(GLfloat), 0);
