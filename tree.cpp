@@ -54,7 +54,14 @@ namespace game {
         return NULL;
 
     }
+    void Tree::SetPlayer(SceneNode* player) {
 
+        player_ = player;
+    }
+    SceneNode* Tree::GetPlayer(void) const {
+
+        return player_;
+    }
     void Tree::Update(void) {
         //let the tree swaying.
         int move;
@@ -89,8 +96,23 @@ namespace game {
         }
 
 
-
-
+        if (GetName().find("root") == 0) {
+            if (GetPlayer()->GetInteraction() == GetName()) {
+                float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
+                if (distance < 25) {
+                    GetPlayer()->SetInteraction(GetName());
+                }
+                else {
+                    GetPlayer()->SetInteraction("Nothing");
+                }
+            }
+            else if (GetPlayer()->GetInteraction() == "Nothing") {
+                float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
+                if (distance < 25) {
+                    GetPlayer()->SetInteraction(GetName());
+                }
+            }
+        }
 
 
 

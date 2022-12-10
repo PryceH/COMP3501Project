@@ -258,10 +258,10 @@ namespace game {
 
 
     void SceneNode::Update(void) {
-        if (GetName().find("magic") == 0 || GetName().find("Door") == 0 || GetName().find("root") == 0) {
+        if (GetName().find("magic") == 0 || GetName().find("Door") == 0) {
             if (GetPlayer()->GetInteraction() == GetName()) {
-                float distance = glm::distance(GetPlayer()->GetPosition(), GetPosition());
-                if (distance < 20) {
+                float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
+                if (distance < 25) {
                     GetPlayer()->SetInteraction(GetName());
                 }
                 else {
@@ -269,11 +269,15 @@ namespace game {
                 }
             }
             else if (GetPlayer()->GetInteraction() == "Nothing") {
-                float distance = glm::distance(GetPlayer()->GetPosition(), GetPosition());
-                if (distance < 20) {
+                float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
+                if (distance < 25) {
                     GetPlayer()->SetInteraction(GetName());
                 }
             }
+        }
+
+        if (GetName() == "Player") {
+            std::cout << "Interact with " << GetInteraction() << "\n";
         }
         // Do nothing for this generic type of scene node
     }

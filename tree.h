@@ -32,7 +32,10 @@ namespace game {
         void SetWind(glm::vec3 wind);
         std::vector<Tree*> GetSon();
         Tree* GetFather();
+        SceneNode* GetPlayer(void) const;
+        void SetPlayer(SceneNode* player);
         void SetFather(Tree* root);
+        SceneNode* player_;
         // Update geometry configuration
         void Update(void);
 
