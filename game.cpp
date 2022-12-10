@@ -35,6 +35,7 @@ bool game_start = false;
 bool door_open = false;
 int code = 0;
 bool keys = false;
+bool win = false;
 bool open = false;
 float player_jump_accerlation = 5.0;
 std::string block_locate = "BlockA";
@@ -227,15 +228,15 @@ void Game::SetupScene(void) {
 
     // Create an instance of the torus mesh
     //game::SceneNode* torus = CreateInstance<SceneNode>("TorusInstance1", "TorusMesh", "ShinyBlueMaterial");
-    
-    
+
+
     player = CreateInstance<SceneNode>("Player", "self", "Self");
     //player->SetBlending(true);
     player->SetRadius(1.0);
     player->SetAngle(glm::pi<float>() / 2);
-    player->SetPosition(glm::vec3(0,-10,25));
+    player->SetPosition(glm::vec3(0, -10, 25));
 
-    glm::quat rotation = glm::angleAxis(glm::pi<float>() /2, glm::vec3(1.0, 0.0, 0.0));
+    glm::quat rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(1.0, 0.0, 0.0));
     game::SceneNode* floor = CreateInstance<SceneNode>("floor", "wall", "TextureMaterial", "Land");
     floor->Rotate(rotation);
     floor->SetAngle(0.0);
@@ -262,12 +263,12 @@ void Game::SetupScene(void) {
     floor4->Scale(glm::vec3(10, 10, 10));
 
     CreateSkyBox();
-    
+
     CreateTreeField(5);
     CreateBlockA();
     CreateBlockB();
     Createbonfire("bonfire", 130, 0, 60);
-    
+
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -276,7 +277,8 @@ void Game::SetupScene(void) {
     game::SceneNode* cover = CreateInstance<SceneNode>("cover", "wall", "TextureMaterial", "Cover");
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
     cover->Rotate(rotation);
-    cover->SetPosition(camera_position_g + glm::vec3(0, 0, -4));
+
+
 
     //game::SceneNode* flame = CreateInstance<SceneNode>("fire", "FireParticles", "FireMaterial", "Flame");
     //flame->SetPosition(glm::vec3(0,1,-1));
@@ -287,9 +289,12 @@ void Game::SetupScene(void) {
     game::SceneNode* magicB = CreateInstance<SceneNode>("magicB", "MagicParticles", "ParticleMagic", "Magic");
     magicB->SetPosition(glm::vec3(130, -0.5, 100));
     magicB->SetPlayer(player);
-    light_.SetPosition(glm::vec3(0,10,0));
-}
 
+    game::SceneNode* magicC = CreateInstance<SceneNode>("magicC", "MagicParticles", "ParticleMagic", "Magic");
+    magicC->SetPosition(glm::vec3(130, -10.5, -35));
+    magicC->SetPlayer(player);
+
+}
 
 void Game::MainLoop(void){
     ChangetoCastle();
@@ -305,7 +310,7 @@ void Game::MainLoop(void){
             static double last_time = 0;
             double current_time = glfwGetTime();
             if ((current_time - last_time) > 0.01){
-                if (game_start) {
+                if (game_start && !win) {
                     scene_.GetNode("cover")->SetPosition(scene_.GetNode("cover")->GetPosition() + glm::vec3(0, -0.2, 0));
                 }
                 if (open) {
@@ -438,17 +443,8 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_Q && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
     }
-    if (game_start) {
-        // Stop animation if space bar is pressed
-    /*if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
-        game->animating_ = (game->animating_ == true) ? false : true;
-    }*/
-        //if (key == GLFW_KEY_E && action == GLFW_PRESS) {
-        //    game->effect = (game->effect == true) ? false : true;
-        //}
-        //if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-        //    game->effect2 = (game->effect2 == true) ? false : true;
-        //}
+    if (game_start && !win) {
+
 
         // View control
         float rot_factor = 2 * (glm::pi<float>() / 180);
@@ -526,7 +522,6 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                     block_locate = "BlockB";
                 }
             }
-            //game->camera_.Translate(glm::vec3(-game->camera_.GetForward().x, 0, -game->camera_.GetForward().z) * trans_factor);
         }
         if (key == GLFW_KEY_A) {
             glm::vec3 pos = player->GetPosition();
@@ -554,8 +549,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
                     block_locate = "BlockB";
                 }
             }
-            //game->camera_.Translate(glm::vec3(-game->camera_.GetSide().x, 0, -game->camera_.GetSide().z) * trans_factor);
-        }
+             }
         if (key == GLFW_KEY_D) {
             glm::vec3 pos = player->GetPosition();
             glm::vec3 move = glm::vec3(game->camera_.GetSide().x, 0, game->camera_.GetSide().z) * trans_factor;
@@ -598,6 +592,8 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             }
             else if (interaction == "magicB") {
                 game->ChangetoVillage();
+            }else if (interaction == "magicC") {
+                win = true;
             }
             else if (interaction == "Door" && keys) {
                 door_open = true;
@@ -613,9 +609,16 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         }
     }
     else {
-        if (key == GLFW_KEY_K) {
-            game_start = true;
+        if (win) {
+            game->scene_.GetNode("cover")->SetPosition(glm::vec3(player->GetPosition().x, game->camera_.GetPosition().y, player->GetPosition().z) + glm::vec3(-0.2, 0, -4));
+
         }
+        else {
+            if (key == GLFW_KEY_K) {
+                game_start = true;
+            }
+        }
+        
     }
     
 }

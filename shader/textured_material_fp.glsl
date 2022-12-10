@@ -16,6 +16,11 @@ void main()
     // Retrieve texture value
     vec4 pixel = texture(texture_map, uv_interp);
 
-    // Use texture in determining fragment colour
+
     gl_FragColor = pixel;
+
+
+
+
+
 }
