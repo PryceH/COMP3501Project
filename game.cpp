@@ -34,7 +34,8 @@ bool player_jump = false;
 bool game_start = false;
 bool door_open = false;
 int code = 0;
-bool key = false;
+bool keys = false;
+bool open = false;
 float player_jump_accerlation = 5.0;
 std::string block_locate = "BlockA";
 
@@ -266,7 +267,7 @@ void Game::SetupScene(void) {
     CreateBlockA();
     CreateBlockB();
     Createbonfire("bonfire", 130, 0, 60);
-    CreateBox(120, -2, -30);
+    
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -306,6 +307,9 @@ void Game::MainLoop(void){
             if ((current_time - last_time) > 0.01){
                 if (game_start) {
                     scene_.GetNode("cover")->SetPosition(scene_.GetNode("cover")->GetPosition() + glm::vec3(0, -0.2, 0));
+                }
+                if (open) {
+                    Open();
                 }
 
                 // door animation
@@ -595,19 +599,18 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             else if (interaction == "magicB") {
                 game->ChangetoVillage();
             }
-            else if (interaction == "Door") {
+            else if (interaction == "Door" && keys) {
                 door_open = true;
             }
             else if (interaction == "root1" || interaction == "root2" || interaction == "root3") {
                 game->CheckCode(game, interaction);
               
             }
-
+            else if (interaction == "boxtop") {
+                keys = true;
+                open = true;
+            }
         }
-        if (key == GLFW_KEY_P) {
-            game->Open();
-        }
-        
     }
     else {
         if (key == GLFW_KEY_K) {
@@ -660,7 +663,8 @@ void Game::CheckCode(Game* game, std::string name) {
                 br->SetTexture(game->resman_.GetResource("Stone"));
             }
             std::cout << "root3" << "\n";
-            key = true;
+            CreateBox(0, -2, 0);
+            
         }
         else {
             code = 0;
@@ -764,6 +768,7 @@ void Game::CreateBox(float x, float y, float z) {
     top->Rotate(rotation);
     top->SetPosition(glm::vec3(x, y + 0.5, z));
     top->SetScale(glm::vec3(0.5, 0.5, 0.5));
+    top->SetPlayer(player);
 
 
     game::SceneNode* bottom = CreateInstance<SceneNode>("boxbottom", "wall", "Light", "Box");

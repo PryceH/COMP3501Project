@@ -258,7 +258,7 @@ namespace game {
 
 
     void SceneNode::Update(void) {
-        if (GetName().find("magic") == 0 || GetName().find("Door") == 0) {
+        if (GetName().find("magic") == 0 || GetName().find("Door") == 0 || GetName().find("boxtop") == 0){
             if (GetPlayer()->GetInteraction() == GetName()) {
                 float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
                 if (distance < 20) {
