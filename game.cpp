@@ -201,6 +201,8 @@ void Game::SetupResources(void){
     filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover.png");
     resman_.LoadResource(Texture, "Cover", filename.c_str());
 
+    filename = std::string(TEXTURE_DIRECTORY) + std::string("/Cover2.png");
+    resman_.LoadResource(Texture, "Cover2", filename.c_str());
     // Create particles for explosion
     
 
@@ -612,6 +614,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     else {
         if (win) {
+            game->scene_.GetNode("cover")->SetTexture(game->resman_.GetResource("Cover2"));
             game->scene_.GetNode("cover")->SetPosition(glm::vec3(player->GetPosition().x, game->camera_.GetPosition().y, player->GetPosition().z) + glm::vec3(-0.2, 0, -4));
 
         }
