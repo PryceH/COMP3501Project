@@ -299,6 +299,7 @@ void Game::MainLoop(void){
         camera_.SetPosition(glm::vec3(player->GetPosition().x, player->GetPosition().y + 11, player->GetPosition().z));
         // Animate the scene
         if (animating_){
+            printf("%f", light_.GetPosition().x);
             
             static double last_time = 0;
             double current_time = glfwGetTime();
@@ -1091,9 +1092,9 @@ void Game::CreateBlockB() {
                                     {110, -50}, {130, -50}, {150, -50},
     };
     float wall_angle[25] = { 0.0, 0.0, 0.0, 
-                        glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2,
-                        glm::pi<float>(), glm::pi<float>(), glm::pi<float>(),
-                        glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2,
+                        glm::pi<float>() *3/ 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2,
+                        glm::pi<float>()*2, glm::pi<float>() * 2, glm::pi<float>() * 2,
+                        glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2,
                         glm::pi<float>(), glm::pi<float>(), glm::pi<float>()
     };
     int wall_coordinate_complement[5][2] = { {110, -50}, {130, -50}, {150, -50}, {160, -40}, {100, -40}};
@@ -1115,6 +1116,7 @@ void Game::CreateBlockB() {
         ss << i + 12 + 25;
         std::string index = ss.str();
         std::string name = "Wall" + index;
+
         wall_arr_complement.push_back(CreateInstance<SceneNode>(name, "wall", "TextureMaterial", "Cwall"));
     }
 

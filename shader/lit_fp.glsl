@@ -6,7 +6,7 @@ in vec3 normal_interp;
 in vec4 color_interp;
 in vec2 uv_interp;
 in vec3 light_pos;
-
+in vec3 view_pos;
 // Uniform (global) buffer
 uniform sampler2D texture_map;
 uniform vec3 view_position;
@@ -20,7 +20,7 @@ void main()
 //	pixel = vec4(0.3,0.4,0.6,1.0);
 	//pixel = color_interp;
 	vec4 lightcol = vec4(1,1,1,1);
-	vec3 v = view_position;
+	vec3 v = view_pos;
 	vec3 vv = normalize(v - position_interp);
 	vec3 l = light_pos;
 	vec3 lv = normalize(l - position_interp);

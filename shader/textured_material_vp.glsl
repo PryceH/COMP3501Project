@@ -18,9 +18,11 @@ out vec3 normal_interp;
 out vec4 color_interp;
 out vec2 uv_interp;
 out vec3 light_pos;
+out vec3 view_pos;
 
 // Material attributes (constants)
 uniform vec3 light_position;
+uniform vec3 view_position;
 
 
 void main()
@@ -38,4 +40,5 @@ void main()
     uv_interp = uv;
 
     light_pos = vec3(view_mat * vec4(light_position, 1.0));
+    view_pos = vec3(view_mat * vec4(view_position, 1.0));
 }
