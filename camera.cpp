@@ -139,6 +139,9 @@ void Camera::SetupShader(GLuint program){
     // Set projection matrix in shader
     GLint projection_mat = glGetUniformLocation(program, "projection_mat");
     glUniformMatrix4fv(projection_mat, 1, GL_FALSE, glm::value_ptr(projection_matrix_));
+
+    GLint cam = glGetUniformLocation(program, "view_position");
+    glUniform3fv(cam, 1, glm::value_ptr(position_));
 }
 
 
