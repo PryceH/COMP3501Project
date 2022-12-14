@@ -271,6 +271,7 @@ void Game::SetupScene(void) {
     CreateBlockB();
     Createbonfire("bonfire", 130, 0, 60);
 
+    CreateBox(0, -2, 0);
     // Scale the instance
     //particles->SetPosition(glm::vec3(2, 0, 0));
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
@@ -314,9 +315,6 @@ void Game::MainLoop(void){
             if ((current_time - last_time) > 0.01){
                 if (game_start && !win) {
                     scene_.GetNode("cover")->SetPosition(scene_.GetNode("cover")->GetPosition() + glm::vec3(0, -0.2, 0));
-                }
-                if (open) {
-                    Open();
                 }
 
                 // door animation
@@ -387,18 +385,18 @@ void Game::MainLoop(void){
             }
         }
         //scene_.GetNode("ParticleInstance")->SetPosition(glm::vec3(0, 0, -0.5));
-        SceneNode* box = scene_.GetNode("front");
-        box->SetPosition(camera_.GetPosition()+glm::vec3(0,0,-1));
-        box = scene_.GetNode("back");
-        box->SetPosition(camera_.GetPosition() + glm::vec3(0, 0, 1));
-        box = scene_.GetNode("left");
-        box->SetPosition(camera_.GetPosition() + glm::vec3(1, 0, 0));
-        box = scene_.GetNode("right");
-        box->SetPosition(camera_.GetPosition() + glm::vec3(-1, 0, 0));
-        box = scene_.GetNode("top");
-        box->SetPosition(camera_.GetPosition() + glm::vec3(0, 1, 0));
-        box = scene_.GetNode("bottom");
-        box->SetPosition(camera_.GetPosition() + glm::vec3(0, -1, 0));
+        SceneNode* sky_box = scene_.GetNode("front");
+        sky_box->SetPosition(camera_.GetPosition()+glm::vec3(0,0,-1));
+        sky_box = scene_.GetNode("back");
+        sky_box->SetPosition(camera_.GetPosition() + glm::vec3(0, 0, 1));
+        sky_box = scene_.GetNode("left");
+        sky_box->SetPosition(camera_.GetPosition() + glm::vec3(1, 0, 0));
+        sky_box = scene_.GetNode("right");
+        sky_box->SetPosition(camera_.GetPosition() + glm::vec3(-1, 0, 0));
+        sky_box = scene_.GetNode("top");
+        sky_box->SetPosition(camera_.GetPosition() + glm::vec3(0, 1, 0));
+        sky_box = scene_.GetNode("bottom");
+        sky_box->SetPosition(camera_.GetPosition() + glm::vec3(0, -1, 0));
         // Draw the scene
         scene_.Update();
         scene_.Draw(&camera_,&light_);
@@ -608,6 +606,8 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
             }
             else if (interaction == "boxtop") {
                 keys = true;
+                Box* box = (Box*)game->scene_.GetNode("boxtop");
+                box->SetOpen(true);
                 open = true;
             }
         }
@@ -627,88 +627,48 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     
 }
+void Game::ChangeTreesTexture(Tree* br, Resource* texture1, Resource* texture2) {
+    if (br->GetSon().size() == 0) {
+        br->SetTexture(texture2);
+    }
+    else {
+        for (Tree* br_son : br->GetSon()) {
+            ChangeTreesTexture(br_son, texture1, texture2);
+        }
+        if (br->GetName() == "tree_trunk") {
+            br->SetTexture(texture1);
+        }else if (br->GetName() == "tree_branch") {
+            br->SetTexture(texture2);
+        }else {
+            br->SetTexture(texture1);
+        }
+    }
+}
 void Game::CheckCode(Game* game, std::string name) {
 
     Tree* tree = (Tree*)game->scene_.GetNode(name);
     if (code != 3) {
         if (name == "root1" && code == 0) {
             code = 1;
-            tree->SetTexture(game->resman_.GetResource("Stone"));
-            for (Tree* br : tree->GetSon()) {
-                for (Tree* br_br : br->GetSon()) {
-                    for (Tree* br_br_br : br_br->GetSon()) {
-                        br_br_br->SetTexture(game->resman_.GetResource("Stone"));
-                    }
-                    br_br->SetTexture(game->resman_.GetResource("Stone"));
-                }
-                br->SetTexture(game->resman_.GetResource("Stone"));
-            }
+            ChangeTreesTexture(tree, game->resman_.GetResource("Stone"), game->resman_.GetResource("Stone"));
             
             std::cout << "root1" << "\n";
         }else if (name == "root2" && code == 1) {
             code = 2;
-            tree->SetTexture(game->resman_.GetResource("Stone"));
-            for (Tree* br : tree->GetSon()) {
-                for (Tree* br_br : br->GetSon()) {
-                    for (Tree* br_br_br : br_br->GetSon()) {
-                        br_br_br->SetTexture(game->resman_.GetResource("Stone"));
-                    }
-                    br_br->SetTexture(game->resman_.GetResource("Stone"));
-                }
-                br->SetTexture(game->resman_.GetResource("Stone"));
-            }
+            ChangeTreesTexture(tree, game->resman_.GetResource("Stone"), game->resman_.GetResource("Stone"));
             std::cout << "root2" << "\n";
         }else if (name == "root3" && code == 2) {
             code = 3;
-            tree->SetTexture(game->resman_.GetResource("Stone"));
-            for (Tree* br : tree->GetSon()) {
-                for (Tree* br_br : br->GetSon()) {
-                    for (Tree* br_br_br : br_br->GetSon()) {
-                        br_br_br->SetTexture(game->resman_.GetResource("Stone"));
-                    }
-                    br_br->SetTexture(game->resman_.GetResource("Stone"));
-                }
-                br->SetTexture(game->resman_.GetResource("Stone"));
-            }
+            ChangeTreesTexture(tree, game->resman_.GetResource("Stone"), game->resman_.GetResource("Stone"));
             std::cout << "root3" << "\n";
-            CreateBox(0, -2, 0);
+            CreateBox(0, -0.5, 0);
             
         }
         else {
             code = 0;
-            tree = (Tree*)game->scene_.GetNode("root1");
-            tree->SetTexture(game->resman_.GetResource("Wood"));
-            for (Tree* br : tree->GetSon()) {
-                for (Tree* br_br : br->GetSon()) {
-                    for (Tree* br_br_br : br_br->GetSon()) {
-                        br_br_br->SetTexture(game->resman_.GetResource("Land"));
-                    }
-                    br_br->SetTexture(game->resman_.GetResource("Land"));
-                }
-                br->SetTexture(game->resman_.GetResource("Wood"));
-            }
-            tree = (Tree*)game->scene_.GetNode("root2");
-            tree->SetTexture(game->resman_.GetResource("Wood"));
-            for (Tree* br : tree->GetSon()) {
-                for (Tree* br_br : br->GetSon()) {
-                    for (Tree* br_br_br : br_br->GetSon()) {
-                        br_br_br->SetTexture(game->resman_.GetResource("Land"));
-                    }
-                    br_br->SetTexture(game->resman_.GetResource("Land"));
-                }
-                br->SetTexture(game->resman_.GetResource("Wood"));
-            }
-            tree = (Tree*)game->scene_.GetNode("root3");
-            tree->SetTexture(game->resman_.GetResource("Wood"));
-            for (Tree* br : tree->GetSon()) {
-                for (Tree* br_br : br->GetSon()) {
-                    for (Tree* br_br_br : br_br->GetSon()) {
-                        br_br_br->SetTexture(game->resman_.GetResource("Land"));
-                    }
-                    br_br->SetTexture(game->resman_.GetResource("Land"));
-                }
-                br->SetTexture(game->resman_.GetResource("Wood"));
-            }
+            ChangeTreesTexture((Tree*)game->scene_.GetNode("root1"), game->resman_.GetResource("Wood"), game->resman_.GetResource("Land"));
+            ChangeTreesTexture((Tree*)game->scene_.GetNode("root2"), game->resman_.GetResource("Wood"), game->resman_.GetResource("Land"));
+            ChangeTreesTexture((Tree*)game->scene_.GetNode("root3"), game->resman_.GetResource("Wood"), game->resman_.GetResource("Land"));
         }
     }
     
@@ -751,50 +711,39 @@ Game::~Game(){
     glfwTerminate();
 }
 void Game::CreateBox(float x, float y, float z) {
-    game::SceneNode* front = CreateInstance<SceneNode>("box", "wall", "Light", "Box");
-    front->SetPosition(glm::vec3(x, y, z-0.5));
-    front->SetScale(glm::vec3(0.5,0.5,0.5));
+    game::Box* front = CreateInstance<Box>("box", "wall", "Light", "Box");
+    front->SetPosition(glm::vec3(x, y, z-2));
+    front->SetScale(glm::vec3(2, 1, 2));
 
-    game::SceneNode* left = CreateInstance<SceneNode>("box", "wall", "Light", "Box");
+    game::Box* left = CreateInstance<Box>("box", "wall", "Light", "Box");
     glm::quat rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(0.0, 1.0, 0.0));
     left->Rotate(rotation);
-    left->SetPosition(glm::vec3(x + 0.5, y, z));
-    left->SetScale(glm::vec3(0.5, 0.5, 0.5));
+    left->SetPosition(glm::vec3(x + 2, y, z));
+    left->SetScale(glm::vec3(2, 1, 2));
 
-    game::SceneNode* right = CreateInstance<SceneNode>("box", "wall", "Light", "Box");
+    game::Box* right = CreateInstance<Box>("box", "wall", "Light", "Box");
     rotation = glm::angleAxis(glm::pi<float>() / -2, glm::vec3(0.0, 1.0, 0.0));
     right->Rotate(rotation);
-    right->SetPosition(glm::vec3(x - 0.5, y, z));
-    right->SetScale(glm::vec3(0.5, 0.5, 0.5));
+    right->SetPosition(glm::vec3(x - 2, y, z));
+    right->SetScale(glm::vec3(2, 1, 2));
 
-    game::SceneNode* back = CreateInstance<SceneNode>("box", "wall", "Light", "Box");
-    back->SetPosition(glm::vec3(x, y, z + 0.5));
-    back->SetScale(glm::vec3(0.5, 0.5, 0.5));
+    game::Box* back = CreateInstance<Box>("box", "wall", "Light", "Box");
+    back->SetPosition(glm::vec3(x, y, z + 2));
+    back->SetScale(glm::vec3(2, 1, 2));
 
-    game::SceneNode* top = CreateInstance<SceneNode>("boxtop", "wall", "Light", "Box");
-    rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(1.0, 0.0, 0.0));
+    game::Box* top = CreateInstance<Box>("boxtop", "wall", "Light", "Box");
+    rotation = glm::angleAxis(3 * glm::pi<float>() / 2, glm::vec3(1.0, 0.0, 0.0));
     top->Rotate(rotation);
-    top->SetPosition(glm::vec3(x, y + 0.5, z));
-    top->SetScale(glm::vec3(0.5, 0.5, 0.5));
+    top->SetPosition(glm::vec3(x, y + 1, z));
+    top->SetScale(glm::vec3(2, 2, 0.5));
     top->SetPlayer(player);
+    top->SetOpen(false);
 
-
-    game::SceneNode* bottom = CreateInstance<SceneNode>("boxbottom", "wall", "Light", "Box");
-    rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(1.0, 0.0, 0.0));
+    game::Box* bottom = CreateInstance<Box>("boxbottom", "wall", "Light", "Box");
+    rotation = glm::angleAxis(3 * glm::pi<float>() / 2, glm::vec3(1.0, 0.0, 0.0));
     bottom->Rotate(rotation);
     bottom->SetPosition(glm::vec3(x, y-0.5, z));
-    bottom->SetScale(glm::vec3(0.5, 0.5, 0.5));
-}
-void Game::Open() {
-    game::SceneNode* top = scene_.GetNode("boxtop");
-    if (abs(top->GetPosition().x - scene_.GetNode("boxbottom")->GetPosition().x) > 0.125) {
-    }
-    else {
-        top->Rotate(glm::angleAxis((glm::pi<float>() / 360), glm::vec3(0, 1, 0)));//rotate the tree by vator wind
-        top->Translate(glm::vec3(-0.125 / 45, 0, 0));
-        top->Translate(glm::vec3(0, 0.125 / 45, 0));
-    }
-    
+    bottom->SetScale(glm::vec3(2, 2, 0.5));
 }
 Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name){
 
@@ -1011,13 +960,14 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
         return;
     }
     std::string tex = "Wood";
+    std::string tree_name = "tree_trunk";
     if (num == max_num - 1|| num == max_num - 2) {
         tex = "Land";
+        tree_name = "tree_branch";
     }
-    num += 1;
     float scale = main_tree->GetScale().x / 2;
     //x side branches
-    Tree* tree1 = CreateTreeInstance("tree", "tree", "Light",tex);
+    Tree* tree1 = CreateTreeInstance(tree_name, "tree", "Light",tex);
     tree1->SetOrientation(main_tree->GetOrientation());
     tree1->SetScale(glm::vec3(scale, scale, scale));
     tree1->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, 4 * scale));
@@ -1025,9 +975,9 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     tree1->SetMove(glm::vec3(0, 4 * scale, 0));
     main_tree->SetSon(tree1);
     tree1->SetFather(main_tree);
-    Branches_grow(tree1, num, max_num);
+    Branches_grow(tree1, num + 1, max_num);
     //-x side branches
-    Tree* tree2 = CreateTreeInstance("tree", "tree", "Light", tex);
+    Tree* tree2 = CreateTreeInstance(tree_name, "tree", "Light", tex);
     tree2->SetOrientation(main_tree->GetOrientation());
     tree2->SetScale(glm::vec3(scale, scale, scale));
     tree2->SetPosition(glm::vec3(0, 8 * scale + 4 * scale, -4 * scale));
@@ -1035,9 +985,9 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     tree2->SetMove(glm::vec3(0, 4 * scale, 0));
     tree2->SetFather(main_tree);
     main_tree->SetSon(tree2);
-    Branches_grow(tree2, num, max_num);
+    Branches_grow(tree2, num + 1, max_num);
     //z side branches
-    Tree* tree3 = CreateTreeInstance("tree", "tree", "Light", tex);
+    Tree* tree3 = CreateTreeInstance(tree_name, "tree", "Light", tex);
     tree3->SetOrientation(main_tree->GetOrientation());
     tree3->SetScale(glm::vec3(scale, scale, scale));
     tree3->SetPosition(glm::vec3(-4 * scale, 8 * scale + 4 * scale, 0));
@@ -1045,9 +995,9 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     tree3->SetMove(glm::vec3(0, 4 * scale, 0));
     tree3->SetFather(main_tree);
     main_tree->SetSon(tree3);
-    Branches_grow(tree3, num, max_num);
+    Branches_grow(tree3, num + 1, max_num);
     //-z side branches
-    Tree* tree4 = CreateTreeInstance("tree", "tree", "Light", tex);
+    Tree* tree4 = CreateTreeInstance(tree_name, "tree", "Light", tex);
     tree4->SetOrientation(main_tree->GetOrientation());
     tree4->SetScale(glm::vec3(scale, scale, scale));
     tree4->SetPosition(glm::vec3(4 * scale, 8 * scale + 4 * scale, 0));
@@ -1055,7 +1005,7 @@ void Game::Branches_grow(Tree* main_tree, int num, int max_num) {
     tree4->SetMove(glm::vec3(0, 4 * scale, 0));
     tree4->SetFather(main_tree);
     main_tree->SetSon(tree4);
-    Branches_grow(tree4, num, max_num);
+    Branches_grow(tree4, num + 1, max_num);
 
 
 
@@ -1066,20 +1016,20 @@ void Game::CreateTreeField(int num_branches) {
 
     // Create root og tree
     Tree* root1 = CreateTreeInstance("root1", "tree", "Light", "Wood");
-    root1->SetPosition(glm::vec3(-25, 0, -25));
     Branches_grow(root1, 0, 3);
+    root1->SetPosition(glm::vec3(-25, 0, -25));
     root1->SetWind(glm::vec3(1, 0, 1));
     root1->SetPlayer(player);
 
     Tree* root2 = CreateTreeInstance("root2", "tree", "Light", "Wood");
-    root2->SetPosition(glm::vec3(25, 0, 25));
     Branches_grow(root2, 0, 3);
+    root2->SetPosition(glm::vec3(25, 0, 25));
     root2->SetWind(glm::vec3(1, 0, 1));
     root2->SetPlayer(player);
 
     Tree* root3 = CreateTreeInstance("root3", "tree", "Light", "Wood");
-    root3->SetPosition(glm::vec3(-25, 0, 25));
     Branches_grow(root3, 0, 3);
+    root3->SetPosition(glm::vec3(-25, 0, 25));
     root3->SetWind(glm::vec3(1, 0, 1));
     root3->SetPlayer(player);
     // create branches

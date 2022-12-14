@@ -12,6 +12,7 @@
 #include "camera.h"
 #include "asteroid.h"
 #include "sky.h"
+#include "box.h"
 #include "tree.h"
 #include "light.h"
 namespace game {
@@ -79,6 +80,7 @@ namespace game {
             Asteroid *CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name);
             // Create entire random asteroid field
             void CreateAsteroidField(int num_asteroids = 1500);
+
             //sky box
             Sky* CreateSkyBoxInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));
             void CreateSkyBox();
@@ -86,19 +88,21 @@ namespace game {
             void Createbonfire(std::string name, float x, float y, float z);
             void ChangetoCastle();
             void ChangetoVillage();
+
+            // Create tree
+            Tree* CreateTreeInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));
+            void CreateTreeField(int num_branches);
             void CheckCode(Game* game, std::string name);
             void Open();
-
-            // Create an instance of an object stored in the resource manager
-            template <class Instance> 
-            Instance *CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));
-            Tree* CreateTreeInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));
-            // Create tree
-            void CreateTreeField(int num_branches);
+            void ChangeTreesTexture(Tree* br, Resource* texture1, Resource* texture2);
 
             // Create Map blocks
             void CreateBlockA();
             void CreateBlockB();
+
+            // Create Instance
+            template <class Instance> 
+            Instance *CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));
 
     }; // class Game
 
