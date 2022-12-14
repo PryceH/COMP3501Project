@@ -257,7 +257,7 @@ namespace game {
 
 
     void SceneNode::Update(void) {
-        if (GetName().find("magic") == 0 || GetName().find("Door") == 0 || GetName().find("boxtop") == 0){
+        if (GetName().find("magic") == 0 || GetName().find("Door") == 0){
             if (GetPlayer()->GetInteraction() == GetName()) {
                 float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
                 if (distance < 20) {
@@ -280,7 +280,6 @@ namespace game {
 
 
     void SceneNode::SetupShader(GLuint program) {
-
         // Set attributes for shaders
         if (name_.find("magic")==0) {
             // Set attributes for shaders
@@ -325,7 +324,12 @@ namespace game {
             glVertexAttribPointer(tex_att, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(GLfloat), (void*)(9 * sizeof(GLfloat)));
             glEnableVertexAttribArray(tex_att);
         }
-        if (name_ == "tree") {
+        if (name_.find("tree") == 0) {
+            glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
+            GLint world_mat = glGetUniformLocation(program, "world_mat");
+            glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(GetTrans() * scaling));
+        }
+        else if (name_.find("boxtop") == 0) {
             glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
             GLint world_mat = glGetUniformLocation(program, "world_mat");
             glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(GetTrans() * scaling));
