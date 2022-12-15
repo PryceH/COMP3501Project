@@ -1,13 +1,23 @@
 // Material with no illumination simulation
-
 #version 130
 
 // Attributes passed from the vertex shader
+in vec3 position_interp;
+in vec3 normal_interp;
 in vec4 color_interp;
+in vec2 uv_interp;
+in vec3 light_pos;
+in vec3 view_pos;
+
+// Uniform (global) buffer
+uniform sampler2D texture_map;
 
 
 void main() 
 {
-	gl_FragColor = color_interp;
-	//gl_FragColor = vec4(0.6, 0.6, 0.6, 1.0);
+    // Retrieve texture value
+    vec4 pixel = texture(texture_map, uv_interp);
+
+		
+   gl_FragColor = pixel;
 }

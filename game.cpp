@@ -126,6 +126,8 @@ void Game::SetupResources(void){
     // Load material to be applied to torus
     std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("/three-term_shiny_blue");
     resman_.LoadResource(Material, "ShinyBlueMaterial", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/material");
+    resman_.LoadResource(Material, "Material", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/textured_material");
     resman_.LoadResource(Material, "TextureMaterial", filename.c_str());
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/normal_map");
@@ -274,7 +276,7 @@ void Game::SetupScene(void) {
     //torus->Scale(glm::vec3(1.5, 1.5, 1.5));
     //particles->SetBlending(true);
     //cover
-    game::SceneNode* cover = CreateInstance<SceneNode>("cover", "wall", "TextureMaterial", "Cover");
+    game::SceneNode* cover = CreateInstance<SceneNode>("cover", "wall", "Material", "Cover");
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
     cover->Rotate(rotation);
 
@@ -305,7 +307,7 @@ void Game::MainLoop(void){
         camera_.SetPosition(glm::vec3(player->GetPosition().x, player->GetPosition().y + 11, player->GetPosition().z));
         // Animate the scene
         if (animating_){
-            printf("%f", light_.GetPosition().x);
+            std::cout << light_.GetPosition().x << " " << light_.GetPosition().z << "\n";
             
             static double last_time = 0;
             double current_time = glfwGetTime();
@@ -388,15 +390,16 @@ void Game::MainLoop(void){
         sky_box->SetPosition(camera_.GetPosition() + glm::vec3(0, -1, 0));
         // Draw the scene
         scene_.Update();
-        scene_.Draw(&camera_,&light_);
         // Draw the scene to a texture
         if (effect) {
             scene_.DrawToTexture(&camera_,&light_);
             scene_.DisplayTexture(resman_.GetResource("FlameEffect")->GetResource());
-        }
-        if (effect2) {
+        }else if (effect2) {
             scene_.DrawToTexture(&camera_, &light_);
             scene_.DisplayTexture(resman_.GetResource("MagicEffect")->GetResource());
+        }
+        else {
+            scene_.Draw(&camera_,&light_);
         }
 
 
@@ -673,7 +676,7 @@ void Game::CheckCode(Game* game, std::string name) {
 void Game::ChangetoCastle() {
     block_locate = "BlockB";
     player->SetPosition(glm::vec3(115, 0, 80));
-    light_.SetPosition(scene_.GetNode("Fire")->GetPosition());
+    light_.SetPosition(glm::vec3(scene_.GetNode("Fire")->GetPosition().x, scene_.GetNode("Fire")->GetPosition().y + 1, scene_.GetNode("Fire")->GetPosition().z));
     scene_.GetNode("front")->SetTexture(resman_.GetResource("BackTexture2"));
     scene_.GetNode("back")->SetTexture(resman_.GetResource("FrontTexture2"));
     scene_.GetNode("left")->SetTexture(resman_.GetResource("LeftTexture2"));
@@ -684,7 +687,7 @@ void Game::ChangetoCastle() {
 void Game::ChangetoVillage() {
     block_locate = "BlockA";
     player->SetPosition(glm::vec3(0, 0, 0));
-    light_.SetPosition(glm::vec3(0, 10, 0));
+    light_.SetPosition(glm::vec3(0, 1, 0));
     scene_.GetNode("front")->SetTexture(resman_.GetResource("FrontTexture"));
     scene_.GetNode("back")->SetTexture(resman_.GetResource("BackTexture"));
     scene_.GetNode("left")->SetTexture(resman_.GetResource("LeftTexture"));
@@ -829,32 +832,32 @@ Sky* Game::CreateSkyBoxInstance(std::string entity_name, std::string object_name
     return sky;
 }
 void Game::CreateSkyBox() {
-    Sky* front = CreateSkyBoxInstance("front", "wall", "TextureMaterial", "FrontTexture");
+    Sky* front = CreateSkyBoxInstance("front", "wall", "Material", "FrontTexture");
     glm::quat rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
     front->Rotate(rotation);
     //front->SetPosition(camera_.GetPosition() + glm::vec3(0,0,-1));
 
-    Sky* left = CreateSkyBoxInstance("left", "wall", "TextureMaterial", "LeftTexture");
+    Sky* left = CreateSkyBoxInstance("left", "wall", "Material", "LeftTexture");
     rotation = glm::angleAxis(glm::pi<float>()/2, glm::vec3(0.0, 1.0, 0.0));
     left->Rotate(rotation);
     //left->SetPosition(camera_.GetPosition() + glm::vec3(1, 0, 0));
 
-    Sky* right = CreateSkyBoxInstance("right", "wall", "TextureMaterial", "RightTexture");
+    Sky* right = CreateSkyBoxInstance("right", "wall", "Material", "RightTexture");
     rotation = glm::angleAxis(glm::pi<float>() / -2, glm::vec3(0.0, 1.0, 0.0));
     right->Rotate(rotation);
     //right->SetPosition(camera_.GetPosition() + glm::vec3(-1, 0, 0));
 
-    Sky* back = CreateSkyBoxInstance("back", "wall", "TextureMaterial", "BackTexture");
+    Sky* back = CreateSkyBoxInstance("back", "wall", "Material", "BackTexture");
     //back->SetPosition(camera_.GetPosition() + glm::vec3(0, 0, 1));
 
-    Sky* top = CreateSkyBoxInstance("top", "wall", "TextureMaterial", "TopTexture");
+    Sky* top = CreateSkyBoxInstance("top", "wall", "Material", "TopTexture");
     rotation = glm::angleAxis(glm::pi<float>()/2, glm::vec3(1.0, 0.0, 0.0));
     top->Rotate(rotation);
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 1.0, 0.0));
     top->Rotate(rotation);
     //top->SetPosition(camera_.GetPosition() + glm::vec3(0, 1, 0));
 
-    Sky* bottom = CreateSkyBoxInstance("bottom", "wall", "TextureMaterial", "BottomTexture");
+    Sky* bottom = CreateSkyBoxInstance("bottom", "wall", "Material", "BottomTexture");
     rotation = glm::angleAxis(glm::pi<float>() / 2, glm::vec3(1.0, 0.0, 0.0));
     bottom->Rotate(rotation);
     rotation = glm::angleAxis(glm::pi<float>(), glm::vec3(0.0, 0.0, 1.0));
@@ -1039,8 +1042,10 @@ void Game::CreateTreeField(int num_branches) {
 void Game::CreateBlockA() {
     std::vector<SceneNode*> wall_arr;
     int wall_coordinate[12][2] = { {-20, -30}, {0, -30}, {20, -30}, {30, -20}, {30, 0}, {30, 20}, {20, 30}, {0, 30}, {-20, 30}, {-30, 20}, {-30, 0}, {-30, -20} };
-    float wall_angle[12] = { 0.0, 0.0, 0.0, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2,
-        glm::pi<float>(), glm::pi<float>(), glm::pi<float>(), glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2 };
+    float wall_angle[12] = { 0.0, 0.0, 0.0, 
+        glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>() / 2,
+        0.0, 0.0, 0.0,
+        glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2 };
     for (int i = 0; i < 12; i++) {
         std::stringstream ss;
         ss << i;
@@ -1068,10 +1073,10 @@ void Game::CreateBlockB() {
                                     {110, -50}, {130, -50}, {150, -50},
     };
     float wall_angle[25] = { 0.0, 0.0, 0.0, 
-                        glm::pi<float>() *3/ 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2, glm::pi<float>() * 3 / 2,
-                        glm::pi<float>()*2, glm::pi<float>() * 2, glm::pi<float>() * 2,
-                        glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2,
-                        glm::pi<float>(), glm::pi<float>(), glm::pi<float>()
+                        glm::pi<float>()/ 2, glm::pi<float>() / 2, glm::pi<float>()/ 2, glm::pi<float>() / 2, glm::pi<float>() / 2, glm::pi<float>()/ 2, glm::pi<float>() / 2, glm::pi<float>() / 2,
+                        0.0, 0.0, 0.0,
+                        glm::pi<float>() / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2, glm::pi<float>()  / 2,
+                        0.0, 0.0, 0.0
     };
     int wall_coordinate_complement[5][2] = { {110, -50}, {130, -50}, {150, -50}, {160, -40}, {100, -40}};
     float wall_angle_complement[5] = { 0.0, 0.0, 0.0, glm::pi<float>() / 2, glm::pi<float>() / 2 };
