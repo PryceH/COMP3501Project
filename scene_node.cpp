@@ -260,7 +260,7 @@ namespace game {
         if (GetName().find("magic") == 0 || GetName().find("Door") == 0){
             if (GetPlayer()->GetInteraction() == GetName()) {
                 float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
-                if (distance < 20) {
+                if (distance < 15) {
                     GetPlayer()->SetInteraction(GetName());
                 }
                 else {
@@ -269,7 +269,7 @@ namespace game {
             }
             else if (GetPlayer()->GetInteraction() == "Nothing") {
                 float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
-                if (distance < 20) {
+                if (distance < 15) {
                     GetPlayer()->SetInteraction(GetName());
                 }
             }
@@ -365,6 +365,9 @@ namespace game {
         GLint timer_var = glGetUniformLocation(program, "timer");
         double current_time = glfwGetTime();
         glUniform1f(timer_var, (float)current_time);
+
+        GLint position_interp = glGetUniformLocation(program, "position");
+        glUniform3fv(position_interp, 1, glm::value_ptr(GetPosition()));
     }
 
 } // namespace game;

@@ -31,6 +31,15 @@ namespace game {
     }
 
 
+    glm::vec3 Light::GetColor(void) const {
+
+        return color_;
+    }
+
+    void Light::SetColor(glm::vec3 color) {
+
+        color_ = color;
+    }
 
     void Light::Translate(glm::vec3 trans) {
 
@@ -44,6 +53,9 @@ namespace game {
         // Set view matrix in shader
         GLint light = glGetUniformLocation(program, "light_position");
         glUniform3fv(light, 1, glm::value_ptr(position_));
+
+        GLint color = glGetUniformLocation(program, "light_color");
+        glUniform3fv(color, 1, glm::value_ptr(color_));
 
     }
 

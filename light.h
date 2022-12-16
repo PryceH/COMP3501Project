@@ -16,9 +16,10 @@ namespace game {
         ~Light();
 
         glm::vec3 GetPosition(void) const;
-
-
         void SetPosition(glm::vec3 position);
+
+        glm::vec3 GetColor(void) const;
+        void SetColor(glm::vec3 color);
 
         void Translate(glm::vec3 trans);
 
@@ -28,7 +29,7 @@ namespace game {
 
     private:
         glm::vec3 position_;
-
+        glm::vec3 color_ = glm::vec3(1.0,1.0,1.0);
         glm::mat4 view_matrix_;
 
 

@@ -36,7 +36,7 @@ namespace game {
         if (GetName().find("boxtop") == 0) {
             if (GetPlayer()->GetInteraction() == GetName()) {
                 float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
-                if (distance < 20) {
+                if (distance < 10) {
                     GetPlayer()->SetInteraction(GetName());
                 }
                 else {
@@ -45,7 +45,7 @@ namespace game {
             }
             else if (GetPlayer()->GetInteraction() == "Nothing") {
                 float distance = glm::distance(glm::vec2(GetPlayer()->GetPosition().x, GetPlayer()->GetPosition().z), glm::vec2(GetPosition().x, GetPosition().z));
-                if (distance < 20) {
+                if (distance < 10) {
                     GetPlayer()->SetInteraction(GetName());
                 }
             }
@@ -54,8 +54,8 @@ namespace game {
         // Open Animation
         if (GetOpen() && time < 50) {
             time++;
-            Rotate(glm::angleAxis((-glm::pi<float>() / 360), glm::vec3(0, 1, 0)));//rotate the tree by vator wind
-            glm::mat4 T = glm::translate(glm::mat4(1.0), glm::vec3(2, 0, 0));
+            Rotate(glm::angleAxis(glm::pi<float>() / 360, glm::vec3(0, 1, 0)));//rotate the tree by vator wind
+            glm::mat4 T = glm::translate(glm::mat4(1.0), glm::vec3(1, 0, 0));
             glm::mat4 T2 = glm::translate(glm::mat4(1.0), GetPosition());
             glm::mat4 R = glm::mat4_cast(GetOrientation());
             glm::mat4 orbit = T2 * glm::inverse(T) * R * T;//orbit trans
